@@ -3,7 +3,6 @@
 import { IconOpenAI, IconUser } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { spinner } from './spinner'
-import { CodeBlock } from '../ui/codeblock'
 import { MemoizedReactMarkdown } from '../markdown'
 import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
@@ -47,36 +46,6 @@ export function BotMessage({
           components={{
             p({ children }) {
               return <p className="mb-2 last:mb-0">{children}</p>
-            },
-            code({ node, inline, className, children, ...props }) {
-              if (children.length) {
-                if (children[0] == '▍') {
-                  return (
-                    <span className="mt-1 animate-pulse cursor-default">▍</span>
-                  )
-                }
-
-                children[0] = (children[0] as string).replace('`▍`', '▍')
-              }
-
-              const match = /language-(\w+)/.exec(className || '')
-
-              if (inline) {
-                return (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                )
-              }
-
-              return (
-                <CodeBlock
-                  key={Math.random()}
-                  language={(match && match[1]) || ''}
-                  value={String(children).replace(/\n$/, '')}
-                  {...props}
-                />
-              )
             }
           }}
         >
