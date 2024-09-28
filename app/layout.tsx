@@ -13,10 +13,10 @@ export const metadata = {
     ? new URL(`https://${process.env.VERCEL_URL}`)
     : undefined,
   title: {
-    default: 'Next.js AI Chatbot',
-    template: `%s - Next.js AI Chatbot`
+    default: 'e-podatek',
+    template: `%s - e-podatek`
   },
-  description: 'An AI-powered chatbot template built with Next.js and Vercel.',
+  description: '"e-podatek" - inteligentny asystent rządowy. Szybka i kompetentna pomoc w sprawach podatkowych, dostępna całodobowo.', 
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
