@@ -9,10 +9,12 @@ import { IconSpinner } from './ui/icons'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { Params } from '@/app/layout'
+import { useTranslation } from '@/app/i18n/client'
 
 export default function LoginForm({ params }: Params) {
   const router = useRouter()
   const [result, dispatch] = useFormState(authenticate, undefined)
+  const { t } = useTranslation(params.lng, 'auth')
 
   useEffect(() => {
     if (result) {
@@ -30,15 +32,18 @@ export default function LoginForm({ params }: Params) {
       action={dispatch}
       className="flex flex-col items-center gap-4 space-y-3"
     >
+      <h1 className="text-2xl font-bold">
+        <span className="text-red">e</span>-podatek
+      </h1>
       <div className="w-full flex-1 rounded-lg border bg-white px-6 pb-4 pt-8 shadow-md  md:w-96 dark:bg-zinc-950">
-        <h1 className="mb-3 text-2xl font-bold">Please log in to continue.</h1>
+        <h1 className="mb-3 text-2xl font-bold">{t('loginHeader')}</h1>
         <div className="w-full">
           <div>
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-zinc-400"
+              className="mb-2 mt-5 block text-xs font-medium text-zinc-400"
               htmlFor="email"
             >
-              Email
+              {t('email')}
             </label>
             <div className="relative">
               <input
@@ -46,17 +51,17 @@ export default function LoginForm({ params }: Params) {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Enter your email address"
+                placeholder={t('enterEmail')}
                 required
               />
             </div>
           </div>
           <div className="mt-4">
             <label
-              className="mb-3 mt-5 block text-xs font-medium text-zinc-400"
+              className="mb-2 mt-5 block text-xs font-medium text-zinc-400"
               htmlFor="password"
             >
-              Password
+              {t('password')}
             </label>
             <div className="relative">
               <input
@@ -64,35 +69,37 @@ export default function LoginForm({ params }: Params) {
                 id="password"
                 type="password"
                 name="password"
-                placeholder="Enter password"
+                placeholder={t('enterPassword')}
                 required
                 minLength={6}
               />
             </div>
           </div>
         </div>
-        <LoginButton />
+        <LoginButton params={params} />
       </div>
 
       <Link
         href={`/${params.lng}/signup`}
         className="flex flex-row gap-1 text-sm text-zinc-400"
       >
-        No account yet? <div className="font-semibold underline">Sign up</div>
+        {t('noAccount')}{' '}
+        <div className="font-semibold underline">{t('signUp')}</div>
       </Link>
     </form>
   )
 }
 
-function LoginButton() {
+function LoginButton({ params }: Params) {
   const { pending } = useFormStatus()
+  const { t } = useTranslation(params.lng, 'auth')
 
   return (
     <button
-      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-zinc-900 p-2 text-sm font-semibold text-zinc-100 hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-red p-2 text-sm font-semibold text-zinc-100"
       aria-disabled={pending}
     >
-      {pending ? <IconSpinner /> : 'Log in'}
+      {pending ? <IconSpinner /> : t('signIn')}
     </button>
   )
 }
