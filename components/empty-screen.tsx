@@ -11,6 +11,9 @@ export function EmptyScreen() {
         <h1 className="text-lg font-semibold">
           Witaj! 👋
         </h1>
+        <p>
+        Witaj w serwisie e-podatek. Jestem Twoim inteligentnym asystentem, gotowym pomóc Ci w wypełnieniu formularzy podatkowych, dostępny 24/7.
+        </p>
       </div>
     </div>
   )
