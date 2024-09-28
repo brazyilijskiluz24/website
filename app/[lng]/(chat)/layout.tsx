@@ -28,7 +28,6 @@ export default async function ChatLayout({
     <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
       <SidebarDesktop params={{ lng }} />
       {children}
-      <TaxOffice />
     </div>
   )
 }

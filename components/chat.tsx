@@ -12,6 +12,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 import { toast } from 'sonner'
 import { TLanguage } from '@/app/i18n/settings'
+import TaxOffice from '@/components/ui/TaxOffice'
+import { DatePickerDemo } from '@/components/ui/datepicker'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -63,30 +65,34 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
       className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
       ref={scrollRef}
     >
-      <div
-        className={cn('pb-[200px] pt-4 md:pt-10', className)}
-        ref={messagesRef}
-      >
-        {messages.length ? (
-          <ChatList
-            messages={messages}
-            isShared={false}
-            session={session}
-            lng={lng}
-          />
-        ) : (
-          <EmptyScreen />
-        )}
-        <div className="w-full h-px" ref={visibilityRef} />
+      <div className={'mx-auto sm:max-w-2xl sm:px-4'}>
+        <div
+          className={cn('pb-[200px] pt-4 md:pt-10', className)}
+          ref={messagesRef}
+        >
+          {messages.length ? (
+            <ChatList
+              messages={messages}
+              isShared={false}
+              session={session}
+              lng={lng}
+            />
+          ) : (
+            <EmptyScreen />
+          )}
+          <div className="w-full h-px" ref={visibilityRef} />
+        </div>
+        {/*<TaxOffice params={{ lng }} />*/}
+        {/*<DatePickerDemo />*/}
+        {/* could be used, commenting for v0 iteration */}
+        <ChatPanel
+          id={id}
+          input={input}
+          setInput={setInput}
+          isAtBottom={isAtBottom}
+          scrollToBottom={scrollToBottom}
+        />
       </div>
-      {/* could be used, commenting for v0 iteration */}
-      <ChatPanel
-        id={id}
-        input={input}
-        setInput={setInput}
-        isAtBottom={isAtBottom}
-        scrollToBottom={scrollToBottom}
-      />
     </div>
   )
 }

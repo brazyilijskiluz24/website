@@ -82,6 +82,8 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
 }
 
 export async function clearChats(lng: string) {
+  "use server"
+  
   const session = await auth()
 
   if (!session?.user?.id) {

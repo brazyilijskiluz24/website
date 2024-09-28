@@ -17,20 +17,22 @@ import {
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { type Chat } from '@/lib/types'
 import { cn } from '@/lib/utils'
+import { TLanguage } from '@/app/i18n/settings'
 
 interface SidebarItemProps {
   index: number
   chat: Chat
   children: React.ReactNode
+  lng: TLanguage
 }
 
-export function SidebarItem({ index, chat, children }: SidebarItemProps) {
+export function SidebarItem({ index, chat, children, lng }: SidebarItemProps) {
   const pathname = usePathname()
 
   const isActive = pathname === chat.path
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
   const shouldAnimate = index === 0 && isActive && newChatId
-
+  console.log(chat.path, 'path')
   if (!chat?.id) return null
 
   return (
@@ -69,7 +71,7 @@ export function SidebarItem({ index, chat, children }: SidebarItemProps) {
         )}
       </div>
       <Link
-        href={chat.path}
+        href={'/' + lng + chat.path}
         className={cn(
           buttonVariants({ variant: 'ghost' }),
           'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',

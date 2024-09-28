@@ -1,4 +1,4 @@
-import { clearChats, getChats } from '@/app/actions'
+import { getChats } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -27,7 +27,7 @@ export async function SidebarList({ userId, lng }: SidebarListProps) {
         <div className="flex-1 overflow-auto">
           {chats?.length ? (
             <div className="space-y-2 px-2">
-              <SidebarItems chats={chats} />
+              <SidebarItems chats={chats} lng={lng} />
             </div>
           ) : (
             <div className="p-8 text-center">
@@ -37,10 +37,7 @@ export async function SidebarList({ userId, lng }: SidebarListProps) {
         </div>
         <div className="flex items-center justify-between p-4">
           <ThemeToggle />
-          <ClearHistory
-            clearChats={() => clearChats(lng)}
-            isEnabled={chats?.length > 0}
-          />
+          <ClearHistory isEnabled={chats?.length > 0} />
         </div>
       </div>
     )

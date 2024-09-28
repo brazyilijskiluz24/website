@@ -35,24 +35,24 @@ export function ChatPanel({
 
   const exampleMessages = [
     {
-      heading: 'What are the',
-      subheading: 'trending memecoins today?',
-      message: `What are the trending memecoins today?`
+      heading: 'Zakup samochodu',
+      image: 'car-purchase.svg',
+      type: 'car'
     },
     {
-      heading: 'What is the price of',
-      subheading: '$DOGE right now?',
-      message: 'What is the price of $DOGE right now?'
+      heading: 'Otrzymałem pożyczkę',
+      image: 'loan.svg',
+      type: 'loan'
     },
     {
-      heading: 'I would like to buy',
-      subheading: '42 $DOGE',
-      message: `I would like to buy 42 $DOGE`
+      heading: 'Wyrok sądu lub ugoda',
+      image: 'court-decision.svg',
+      type: 'court'
     },
     {
-      heading: 'What are some',
-      subheading: `recent events about $DOGE?`,
-      message: `What are some recent events about $DOGE?`
+      heading: 'Inna sprawa',
+      image: 'other.svg',
+      type: 'other'
     }
   ]
 
@@ -64,27 +64,34 @@ export function ChatPanel({
       />
 
       <div className="mx-auto sm:max-w-2xl sm:px-4">
-        <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
-          {/* commenting out for now, maybe we could reuse in future */}
-          {/* {messages.length === 0 &&
+        <div className="mb-4 grid grid-cols-1 gap-2 px-4 sm:px-0">
+          <div
+            className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900`}
+          >
+            <b>Gotowe przypadki</b>
+            <p>
+              Wiesz dokładnie co chcesz zrobić? Wybierz jeden z przygotowanych
+              scenariuszy. W przeciwnym wypadku opisz nam jaki masz zamiar.
+            </p>
+          </div>
+        </div>
+
+        <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0 place-items-center">
+          {messages.length === 0 &&
             exampleMessages.map((example, index) => (
               <div
                 key={example.heading}
-                className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 ${
-                  index > 1 && 'hidden md:block'
-                }`}
+                className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 flex flex-col items-center justify-center w-full`}
                 onClick={async () => {
                   setMessages(currentMessages => [
                     ...currentMessages,
                     {
                       id: nanoid(),
-                      display: <UserMessage>{example.message}</UserMessage>
+                      display: <UserMessage>{example.type}</UserMessage>
                     }
                   ])
 
-                  const responseMessage = await submitUserMessage(
-                    example.message
-                  )
+                  const responseMessage = await submitUserMessage(example.type)
 
                   setMessages(currentMessages => [
                     ...currentMessages,
@@ -92,12 +99,16 @@ export function ChatPanel({
                   ])
                 }}
               >
-                <div className="text-sm font-semibold">{example.heading}</div>
-                <div className="text-sm text-zinc-600">
-                  {example.subheading}
+                <img
+                  src={`/images/${example.image}`}
+                  alt={example.heading}
+                  className="w-24 h-24 mb-2"
+                />
+                <div className="text-sm font-semibold text-center">
+                  {example.heading}
                 </div>
               </div>
-            ))} */}
+            ))}
         </div>
 
         {messages?.length >= 2 ? (
