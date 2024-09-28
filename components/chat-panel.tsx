@@ -66,7 +66,8 @@ export function ChatPanel({
 
       <div className="mx-auto sm:max-w-2xl sm:px-4">
         <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
-          {messages.length === 0 &&
+          {/* commenting out for now, maybe we could reuse in future */}
+          {/* {messages.length === 0 &&
             exampleMessages.map((example, index) => (
               <div
                 key={example.heading}
@@ -97,7 +98,7 @@ export function ChatPanel({
                   {example.subheading}
                 </div>
               </div>
-            ))}
+            ))} */}
         </div>
 
         {messages?.length >= 2 ? (
@@ -131,7 +132,6 @@ export function ChatPanel({
 
         <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
           <PromptForm input={input} setInput={setInput} />
-          <FooterText className="hidden sm:block" />
         </div>
       </div>
     </div>

@@ -72,6 +72,7 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         )}
         <div className="w-full h-px" ref={visibilityRef} />
       </div>
+      {/* could be used, commenting for v0 iteration */}
       <ChatPanel
         id={id}
         input={input}
