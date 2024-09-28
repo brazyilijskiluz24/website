@@ -5,11 +5,11 @@ import '@/app/globals.css'
 import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
+import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
 import { fallbackLng, languages, TLanguage } from '@/app/i18n/settings'
 import { useTranslation } from '@/app/i18n'
 import { dir } from 'i18next'
-import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 export type Params = {
@@ -23,24 +23,15 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params: { lng } }: Params) {
-  const pathname = new URL(headers().get('x-request-url')!).pathname
-  //@ts-ignore
-  if (!lng && !languages.includes(pathname?.slice(1, 3) || '')) {
-    redirect('/' + fallbackLng + '/' + pathname.slice(1))
-  }
-
   if (languages.indexOf(lng) < 0) lng = fallbackLng
   const { t } = await useTranslation(lng, 'common')
   return {
-    title: {
-      default: 'e-podatek',
-      template: `%s - e-podatek`
-    },
+    title: t('title'),
     metadataBase: process.env.VERCEL_URL
       ? new URL(`https://${process.env.VERCEL_URL}`)
       : undefined,
     description:
-      '"e-podatek" - inteligentny asystent rządowy. Szybka i kompetentna pomoc w sprawach podatkowych, dostępna całodobowo.',
+      'An AI-powered chatbot template built with Next.js and Vercel.',
     icons: {
       icon: '/favicon.ico',
       shortcut: '/favicon-16x16.png',
@@ -63,30 +54,14 @@ interface RootLayoutProps {
   }
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
-  const pathname = new URL(headers().get('x-request-url')!).pathname
-
-  const lng = pathname.slice(1, 3) || fallbackLng
+export default function RootLayout({
+  children,
+  params: { lng }
+}: RootLayoutProps) {
   return (
-    <html lang={lng} dir={dir(lng)} suppressHydrationWarning>
-      <body
-        className={cn(
-          'font-sans antialiased',
-          GeistSans.variable,
-          GeistMono.variable
-        )}
-      >
-        <Toaster position="top-center" />
-        <Providers
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <TailwindIndicator />
-        </Providers>
-      </body>
-    </html>
+    <div className="flex flex-col min-h-screen">
+      <Header params={{ lng }} />
+      <main className="flex flex-col flex-1 bg-muted/50">{children}</main>
+    </div>
   )
 }

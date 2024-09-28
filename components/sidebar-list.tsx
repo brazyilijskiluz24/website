@@ -4,21 +4,23 @@ import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { redirect } from 'next/navigation'
 import { cache } from 'react'
+import { TLanguage } from '@/app/i18n/settings'
 
 interface SidebarListProps {
   userId?: string
   children?: React.ReactNode
+  lng: TLanguage
 }
 
 const loadChats = cache(async (userId?: string) => {
   return await getChats(userId)
 })
 
-export async function SidebarList({ userId }: SidebarListProps) {
+export async function SidebarList({ userId, lng }: SidebarListProps) {
   const chats = await loadChats(userId)
 
   if (!chats || 'error' in chats) {
-    redirect('/')
+    redirect('/' + lng)
   } else {
     return (
       <div className="flex flex-1 flex-col overflow-hidden">
@@ -35,7 +37,10 @@ export async function SidebarList({ userId }: SidebarListProps) {
         </div>
         <div className="flex items-center justify-between p-4">
           <ThemeToggle />
-          <ClearHistory clearChats={clearChats} isEnabled={chats?.length > 0} />
+          <ClearHistory
+            clearChats={() => clearChats(lng)}
+            isEnabled={chats?.length > 0}
+          />
         </div>
       </div>
     )

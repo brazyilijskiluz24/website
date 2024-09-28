@@ -2,8 +2,9 @@ import { Sidebar } from '@/components/sidebar'
 
 import { auth } from '@/auth'
 import { ChatHistory } from '@/components/chat-history'
+import { Params } from '@/app/layout'
 
-export async function SidebarDesktop() {
+export async function SidebarDesktop({ params }: Params) {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -13,7 +14,7 @@ export async function SidebarDesktop() {
   return (
     <Sidebar className="peer absolute inset-y-0 z-30 hidden -translate-x-full border-r bg-muted duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[250px] xl:w-[300px]">
       {/* @ts-ignore */}
-      <ChatHistory userId={session.user.id} />
+      <ChatHistory userId={session.user.id} lng={lng} />
     </Sidebar>
   )
 }

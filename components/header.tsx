@@ -15,20 +15,21 @@ import { SidebarMobile } from './sidebar-mobile'
 import { SidebarToggle } from './sidebar-toggle'
 import { ChatHistory } from './chat-history'
 import { Session } from '@/lib/types'
+import { Params } from '@/app/layout'
 
-async function UserOrLogin() {
+async function UserOrLogin({ params }: Params) {
   const session = (await auth()) as Session
   return (
     <>
       {session?.user ? (
         <>
           <SidebarMobile>
-            <ChatHistory userId={session.user.id} />
+            <ChatHistory userId={session.user.id} lng={params.lng} />
           </SidebarMobile>
           <SidebarToggle />
         </>
       ) : (
-        <Link href="/new" rel="nofollow">
+        <Link href={`/${params.lng}/new`} rel="nofollow">
           <IconNextChat className="size-6 mr-2 dark:hidden" inverted />
           <IconNextChat className="hidden size-6 mr-2 dark:block" />
         </Link>
@@ -39,7 +40,7 @@ async function UserOrLogin() {
           <UserMenu user={session.user} />
         ) : (
           <Link
-            href="/login"
+            href={`/${params.lng}/login`}
             rel="noopener noreferrer"
             className={cn(buttonVariants({ variant: 'outline' }))}
           >
@@ -51,12 +52,12 @@ async function UserOrLogin() {
   )
 }
 
-export function Header() {
+export function Header(props: Params) {
   return (
     <header className="sticky top-0 z-50 flex items-center justify-between w-full h-16 px-4 border-b shrink-0 bg-gradient-to-b from-background/10 via-background/50 to-background/80 backdrop-blur-xl">
       <div className="flex items-center">
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
-          <UserOrLogin />
+          <UserOrLogin params={{ lng: props.params.lng }} />
         </React.Suspense>
       </div>
     </header>
