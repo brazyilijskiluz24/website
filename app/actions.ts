@@ -81,7 +81,7 @@ export async function removeChat({ id, path }: { id: string; path: string }) {
   return revalidatePath(path)
 }
 
-export async function clearChats() {
+export async function clearChats(lng: string) {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -92,7 +92,7 @@ export async function clearChats() {
 
   const chats: string[] = await kv.zrange(`user:chat:${session.user.id}`, 0, -1)
   if (!chats.length) {
-    return redirect('/')
+    return redirect('/' + lng)
   }
   const pipeline = kv.pipeline()
 
@@ -103,8 +103,8 @@ export async function clearChats() {
 
   await pipeline.exec()
 
-  revalidatePath('/')
-  return redirect('/')
+  revalidatePath('/' + lng)
+  return redirect('/' + lng)
 }
 
 export async function getSharedChat(id: string) {

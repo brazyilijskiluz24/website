@@ -11,15 +11,17 @@ import { Message, Session } from '@/lib/types'
 import { usePathname, useRouter } from 'next/navigation'
 import { useScrollAnchor } from '@/lib/hooks/use-scroll-anchor'
 import { toast } from 'sonner'
+import { TLanguage } from '@/app/i18n/settings'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
   session?: Session
   missingKeys: string[]
+  lng: TLanguage
 }
 
-export function Chat({ id, className, session, missingKeys }: ChatProps) {
+export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
@@ -66,7 +68,12 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
         ref={messagesRef}
       >
         {messages.length ? (
-          <ChatList messages={messages} isShared={false} session={session} />
+          <ChatList
+            messages={messages}
+            isShared={false}
+            session={session}
+            lng={lng}
+          />
         ) : (
           <EmptyScreen />
         )}

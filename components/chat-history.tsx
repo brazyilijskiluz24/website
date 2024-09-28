@@ -6,12 +6,14 @@ import { cn } from '@/lib/utils'
 import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
+import { TLanguage } from '@/app/i18n/settings'
 
 interface ChatHistoryProps {
   userId?: string
+  lng: TLanguage
 }
 
-export async function ChatHistory({ userId }: ChatHistoryProps) {
+export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between p-4">
@@ -19,7 +21,7 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
       </div>
       <div className="mb-2 px-2">
         <Link
-          href="/"
+          href={`/${lng}/`}
           className={cn(
             buttonVariants({ variant: 'outline' }),
             'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
@@ -42,7 +44,7 @@ export async function ChatHistory({ userId }: ChatHistoryProps) {
         }
       >
         {/* @ts-ignore */}
-        <SidebarList userId={userId} />
+        <SidebarList userId={userId} lng={lng} />
       </React.Suspense>
     </div>
   )

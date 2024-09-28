@@ -1,15 +1,16 @@
 'use client'
 
 import { useFormState, useFormStatus } from 'react-dom'
-import { signup } from '@/app/signup/actions'
+import { signup } from '@/app/[lng]/signup/actions'
 import Link from 'next/link'
 import { useEffect } from 'react'
 import { toast } from 'sonner'
 import { IconSpinner } from './ui/icons'
 import { getMessageFromCode } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
+import { Params } from '@/app/layout'
 
-export default function SignupForm() {
+export default function SignupForm({ params }: Params) {
   const router = useRouter()
   const [result, dispatch] = useFormState(signup, undefined)
 
@@ -73,7 +74,10 @@ export default function SignupForm() {
         <LoginButton />
       </div>
 
-      <Link href="/login" className="flex flex-row gap-1 text-sm text-zinc-400">
+      <Link
+        href={`/${params.lng}/login`}
+        className="flex flex-row gap-1 text-sm text-zinc-400"
+      >
         Already have an account?
         <div className="font-semibold underline">Log in</div>
       </Link>

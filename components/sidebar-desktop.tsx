@@ -6,10 +6,10 @@ import {
   DoubleArrowLeftIcon,
   InfoCircledIcon
 } from '@radix-ui/react-icons'
-import Image from 'next/image'
 import { ChatHistory } from '@/components/chat-history'
+import { Params } from '@/app/layout'
 
-export async function SidebarDesktop() {
+export async function SidebarDesktop({ params }: Params) {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -21,7 +21,7 @@ export async function SidebarDesktop() {
       {/* @ts-ignore */}
       <Header />
       <Profile />
-      <ChatHistory userId={session.user.id} />
+      <ChatHistory userId={session.user.id} lng={params.lng} />
     </Sidebar>
   )
 }

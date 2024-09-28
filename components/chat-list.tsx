@@ -3,14 +3,16 @@ import { UIState } from '@/lib/chat/actions'
 import { Session } from '@/lib/types'
 import Link from 'next/link'
 import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
+import { TLanguage } from '@/app/i18n/settings'
 
 export interface ChatList {
   messages: UIState
   session?: Session
   isShared: boolean
+  lng: TLanguage
 }
 
-export function ChatList({ messages, session, isShared }: ChatList) {
+export function ChatList({ messages, session, isShared, lng }: ChatList) {
   if (!messages.length) {
     return null
   }
@@ -26,11 +28,11 @@ export function ChatList({ messages, session, isShared }: ChatList) {
             <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
               <p className="text-muted-foreground leading-normal">
                 Please{' '}
-                <Link href="/login" className="underline">
+                <Link href={`/${lng}/login`} className="underline">
                   log in
                 </Link>{' '}
                 or{' '}
-                <Link href="/signup" className="underline">
+                <Link href={`/${lng}/signup`} className="underline">
                   sign up
                 </Link>{' '}
                 to save and revisit your chat history!

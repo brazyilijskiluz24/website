@@ -5,6 +5,7 @@ import { formatDate } from '@/lib/utils'
 import { getSharedChat } from '@/app/actions'
 import { ChatList } from '@/components/chat-list'
 import { AI, UIState, getUIStateFromAIState } from '@/lib/chat/actions'
+import { TLanguage } from '@/app/i18n/settings'
 
 export const runtime = 'edge'
 export const preferredRegion = 'home'
@@ -12,6 +13,7 @@ export const preferredRegion = 'home'
 interface SharePageProps {
   params: {
     id: string
+    lng: TLanguage
   }
 }
 
@@ -48,7 +50,7 @@ export default async function SharePage({ params }: SharePageProps) {
           </div>
         </div>
         <AI>
-          <ChatList messages={uiState} isShared={true} />
+          <ChatList messages={uiState} isShared={true} lng={params.lng} />
         </AI>
       </div>
     </>

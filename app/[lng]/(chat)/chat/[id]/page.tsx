@@ -6,10 +6,12 @@ import { getChat, getMissingKeys } from '@/app/actions'
 import { Chat } from '@/components/chat'
 import { AI } from '@/lib/chat/actions'
 import { Session } from '@/lib/types'
+import { TLanguage } from '@/app/i18n/settings'
 
 export interface ChatPageProps {
   params: {
     id: string
+    lng: TLanguage
   }
 }
 
@@ -25,7 +27,7 @@ export async function generateMetadata({
   const chat = await getChat(params.id, session.user.id)
 
   if (!chat || 'error' in chat) {
-    redirect('/')
+    redirect('/' + params.lng)
   } else {
     return {
       title: chat?.title.toString().slice(0, 50) ?? 'Chat'
@@ -38,14 +40,14 @@ export default async function ChatPage({ params }: ChatPageProps) {
   const missingKeys = await getMissingKeys()
 
   if (!session?.user) {
-    redirect(`/login?next=/chat/${params.id}`)
+    redirect(`/${params.lng}/login?next=/chat/${params.id}`)
   }
 
   const userId = session.user.id as string
   const chat = await getChat(params.id, userId)
 
   if (!chat || 'error' in chat) {
-    redirect('/')
+    redirect('/' + params.lng)
   } else {
     if (chat?.userId !== session?.user?.id) {
       notFound()
@@ -58,6 +60,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
           session={session}
           initialMessages={chat.messages}
           missingKeys={missingKeys}
+          lng={params.lng}
         />
       </AI>
     )
