@@ -2,6 +2,7 @@ import { SidebarDesktop } from '@/components/sidebar-desktop'
 import { fallbackLng, languages } from '@/app/i18n/settings'
 import { useTranslation } from '@/app/i18n'
 import { Params } from '@/app/[lng]/layout'
+import TaxOffice from '@/components/ui/TaxOffice'
 
 export async function generateStaticParams() {
   return languages.map(lng => ({ lng }))
@@ -27,6 +28,7 @@ export default async function ChatLayout({
     <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
       <SidebarDesktop params={{ lng }} />
       {children}
+      <TaxOffice />
     </div>
   )
 }
