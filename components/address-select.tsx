@@ -31,7 +31,7 @@ const AddressSelect = ({ params }: Params) => {
       <AsyncSelect
         cacheOptions
         loadOptions={getAddresses}
-        placeholder={t('selectOrSearchTaxOffice')}
+        placeholder={t('selectLocation')}
         className={'mx-auto w-full'}
         options={taxOfices.map(v => ({ value: v, label: v }))}
       />

@@ -11,6 +11,7 @@ import type { AI } from '@/lib/chat/actions'
 import { nanoid } from '@/lib/utils'
 import { UserMessage } from '@/components/stocks/message'
 import ChatCard from '@/components/chat-card'
+import PersonalData from '@/components/personal-data'
 
 export interface ChatPanelProps {
   id?: string
@@ -64,6 +65,8 @@ export function ChatPanel({
         scrollToBottom={scrollToBottom}
       />
       <div className="mx-auto sm:max-w-2xl sm:px-4">
+        <PersonalData />
+
         {messages.length === 0 && (
           <div className="mb-4 grid grid-cols-1 gap-2 px-4 sm:px-0">
             <div
