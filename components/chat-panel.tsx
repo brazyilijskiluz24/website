@@ -23,15 +23,7 @@ export interface ChatPanelProps {
   lng: TLanguage
 }
 
-export function ChatPanel({
-  id,
-  title,
-  input,
-  setInput,
-  isAtBottom,
-  scrollToBottom,
-  lng
-}: ChatPanelProps) {
+export function ChatPanel({ id, title, input, setInput }: ChatPanelProps) {
   const [aiState] = useAIState()
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
@@ -47,15 +39,15 @@ export function ChatPanel({
       heading: 'Otrzymałem pożyczkę',
       image: 'loan.svg',
       type: 'Typ sprawy: otrzymanie pozyczki'
-    },
+    }
   ]
 
   return (
     <div className="inset-x-0 bottom-0 w-full bg-gradient-to-b from-muted/30 from-0% to-muted/30 to-50% duration-300 ease-in-out animate-in dark:from-background/10 dark:from-10% dark:to-background/80 ">
-      <ButtonScrollToBottom
-        isAtBottom={isAtBottom}
-        scrollToBottom={scrollToBottom}
-      />
+      {/*<ButtonScrollToBottom*/}
+      {/*  isAtBottom={isAtBottom}*/}
+      {/*  scrollToBottom={scrollToBottom}*/}
+      {/*/>*/}
       <div className="mx-auto sm:max-w-2xl w-full">
         {messages.length === 0 && (
           <div className="mb-4 grid grid-cols-1 gap-2 px-4 sm:px-0">
@@ -124,7 +116,8 @@ export function ChatPanel({
           </div>
         ) : null}
 
-        <div className="absolute bottom-0 w-[calc(100%-2rem)] space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
+        {/*<div className="absolute bottom-0 w-[calc(100%-2rem)] space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">*/}
+        <div className={'absolute bottom-0 right-0 left-0'}>
           <PromptForm input={input} setInput={setInput} />
         </div>
       </div>

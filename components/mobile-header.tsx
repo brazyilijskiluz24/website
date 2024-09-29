@@ -39,7 +39,7 @@ async function UserOrLogin({ params }: Params) {
 
 export function MobileHeader({ params: { lng } }: Params) {
   return (
-    <header className="absolute w-screen left-0 bg-white border-b lg:hidden top-0 z-50 flex items-center justify-between h-16 px-4 shrink-0 bg-gradient-to-b via-background/50 to-background/80 backdrop-blur-xl">
+    <header className="absolute w-screen left-0 bg-white border-b xl:hidden top-0 z-50 flex items-center justify-between h-16 px-4 shrink-0 bg-gradient-to-b via-background/50 to-background/80 backdrop-blur-xl">
       <div className="flex items-center">
         <React.Suspense fallback={<div className="flex-1 overflow-auto" />}>
           <UserOrLogin params={{ lng }} />
