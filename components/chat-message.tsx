@@ -7,9 +7,10 @@ import remarkMath from 'remark-math'
 
 import { cn } from '@/lib/utils'
 import { MemoizedReactMarkdown } from '@/components/markdown'
-import { IconOpenAI, IconUser } from '@/components/ui/icons'
+import { IconUser } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
 import * as React from 'react'
+import Image from 'next/image'
 
 export interface ChatMessageProps {
   message: Message
@@ -32,10 +33,12 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
         {message.role === 'user' ? (
           <IconUser />
         ) : (
-          <image
-            src={`/images/company.png`}
+          <Image
+            src={`/images/tax-assistant.jpeg`}
             alt={'asystenka'}
-            className="w-auto h-16 mb-2 object-contain"
+            width={22}
+            height={22}
+            className="mb-2 rounded-md object-contain"
           />
         )}
       </div>

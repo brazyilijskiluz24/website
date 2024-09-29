@@ -88,16 +88,6 @@ function IconNextChat({
   )
 }
 
-function IconOpenAI() {
-  return (
-    <image
-      src={`/images/company.png`}
-      alt={'asystenka'}
-      className="w-auto h-16 mb-2 object-contain"
-    />
-  )
-}
-
 function IconVercel({ className, ...props }: React.ComponentProps<'svg'>) {
   return (
     <svg
@@ -473,7 +463,6 @@ function IconChevronUpDown({
 export {
   IconEdit,
   IconNextChat,
-  IconOpenAI,
   IconVercel,
   IconGitHub,
   IconSeparator,

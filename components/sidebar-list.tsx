@@ -55,7 +55,7 @@ const ChangeLang = () => {
   const [value, setValue] = useState({ value: 'pl', label: 'PL 🇵🇱' })
   const router = useRouter()
 
-  const onChange = v => {
+  const onChange = (v: any) => {
     setValue(v)
     router.push(v.value)
   }

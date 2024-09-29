@@ -15,7 +15,7 @@ interface ChatHistoryProps {
 }
 
 export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
-  const { t } = useTranslation(lng, 'chat')
+  // const { t } = useTranslation(lng, 'chat')
 
   return (
     <div className="flex flex-col h-full">
@@ -23,18 +23,18 @@ export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
         <h4 className="text-sm font-medium mt-4">Historia konwersacji</h4>
       </div>
       {userId && (
-       <div className="mb-2 px-2">
-        <Link
-          href={`/${lng}/`}
-          className={cn(
-            buttonVariants({ variant: 'outline' }),
-            'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
-          )}
-        >
-          <IconPlus className="-translate-x-2 stroke-2" />
-          Nowy Chat
-        </Link>
-      </div>
+        <div className="mb-2 px-2">
+          <Link
+            href={`/${lng}/`}
+            className={cn(
+              buttonVariants({ variant: 'outline' }),
+              'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
+            )}
+          >
+            <IconPlus className="-translate-x-2 stroke-2" />
+            Nowy Czat
+          </Link>
+        </div>
       )}
       <React.Suspense
         fallback={

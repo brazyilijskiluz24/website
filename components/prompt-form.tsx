@@ -111,7 +111,7 @@ export function PromptForm({
                 <span className="sr-only">{t('sendMessage')}</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>{t()}</TooltipContent>
+            <TooltipContent>Wyślij wiadomość</TooltipContent>
           </Tooltip>
         </div>
       </div>
