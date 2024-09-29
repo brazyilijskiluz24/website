@@ -33,7 +33,7 @@ i18next
   })
 
 // @ts-ignore
-export function useTranslation(lng, ns, options) {
+export function useTranslation(lng, ns, options?: any) {
   const [cookies, setCookie] = useCookies([cookieName])
   const ret = useTranslationOrg(ns, options)
   const { i18n } = ret
