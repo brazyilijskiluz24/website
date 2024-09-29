@@ -1,3 +1,5 @@
+'use client'
+
 import taxOfices from '@/lib/taxOfices'
 import Select from 'react-select'
 import React from 'react'
