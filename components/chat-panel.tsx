@@ -64,18 +64,19 @@ export function ChatPanel({
       />
 
       <div className="mx-auto sm:max-w-2xl sm:px-4">
-        <div className="mb-4 grid grid-cols-1 gap-2 px-4 sm:px-0">
-          <div
-            className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900`}
-          >
-            <b>Gotowe przypadki</b>
-            <p>
-              Wiesz dokładnie co chcesz zrobić? Wybierz jeden z przygotowanych
-              scenariuszy. W przeciwnym wypadku opisz nam jaki masz zamiar.
-            </p>
+        {messages.length === 0 && (
+          <div className="mb-4 grid grid-cols-1 gap-2 px-4 sm:px-0">
+            <div
+              className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900`}
+            >
+              <b>Gotowe przypadki</b>
+              <p>
+                Wiesz dokładnie co chcesz zrobić? Wybierz jeden z przygotowanych
+                scenariuszy. W przeciwnym wypadku opisz nam jaki masz zamiar.
+              </p>
+            </div>
           </div>
-        </div>
-
+        )}
         <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0 place-items-center">
           {messages.length === 0 &&
             exampleMessages.map((example, index) => (
