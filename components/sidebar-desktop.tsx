@@ -29,7 +29,9 @@ export async function SidebarDesktop({ params }: Params) {
 const Header = () => {
   return (
     <div className={'flex  justify-between lg:px-4 xl:px-6'}>
-      <h1 className={'font-bold text-red'}>e-Podatek</h1>
+      <h1 className={'font-bold'}>
+        <span className="text-red">e</span>-Podatek
+      </h1>
       <DoubleArrowLeftIcon className={'text-red'} width={24} height={24} />
     </div>
   )
