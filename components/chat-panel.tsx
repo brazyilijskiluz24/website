@@ -8,6 +8,9 @@ import { IconShare } from '@/components/ui/icons'
 import { ChatShareDialog } from '@/components/chat-share-dialog'
 import { useAIState, useActions, useUIState } from 'ai/rsc'
 import type { AI } from '@/lib/chat/actions'
+import { nanoid } from '@/lib/utils'
+import { UserMessage } from '@/components/stocks/message'
+import ChatCard from '@/components/chat-card'
 
 export interface ChatPanelProps {
   id?: string
@@ -33,24 +36,24 @@ export function ChatPanel({
 
   const exampleMessages = [
     {
-      heading: 'What are the',
-      subheading: 'trending memecoins today?',
-      message: `What are the trending memecoins today?`
+      heading: 'Zakup samochodu',
+      image: 'car-purchase.svg',
+      type: 'car'
     },
     {
-      heading: 'What is the price of',
-      subheading: '$DOGE right now?',
-      message: 'What is the price of $DOGE right now?'
+      heading: 'Otrzymałem pożyczkę',
+      image: 'loan.svg',
+      type: 'loan'
     },
     {
-      heading: 'I would like to buy',
-      subheading: '42 $DOGE',
-      message: `I would like to buy 42 $DOGE`
+      heading: 'Wyrok sądu lub ugoda',
+      image: 'court-decision.svg',
+      type: 'court'
     },
     {
-      heading: 'What are some',
-      subheading: `recent events about $DOGE?`,
-      message: `What are some recent events about $DOGE?`
+      heading: 'Inna sprawa',
+      image: 'other.svg',
+      type: 'other'
     }
   ]
 
@@ -61,40 +64,42 @@ export function ChatPanel({
         scrollToBottom={scrollToBottom}
       />
       <div className="mx-auto sm:max-w-2xl sm:px-4">
-        <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0">
-          {/* commenting out for now, maybe we could reuse in future */}
-          {/* {messages.length === 0 &&
+        {messages.length === 0 && (
+          <div className="mb-4 grid grid-cols-1 gap-2 px-4 sm:px-0">
+            <div
+              className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900`}
+            >
+              <b>Gotowe przypadki</b>
+              <p>
+                Wiesz dokładnie co chcesz zrobić? Wybierz jeden z przygotowanych
+                scenariuszy. W przeciwnym wypadku opisz nam jaki masz zamiar.
+              </p>
+            </div>
+          </div>
+        )}
+        <div className="mb-4 grid grid-cols-2 gap-2 px-4 sm:px-0 place-items-center">
+          {messages.length === 0 &&
             exampleMessages.map((example, index) => (
-              <div
-                key={example.heading}
-                className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900 ${
-                  index > 1 && 'hidden md:block'
-                }`}
+              <ChatCard
+                {...example}
                 onClick={async () => {
                   setMessages(currentMessages => [
                     ...currentMessages,
                     {
                       id: nanoid(),
-                      display: <UserMessage>{example.message}</UserMessage>
+                      display: <UserMessage>{example.type}</UserMessage>
                     }
                   ])
 
-                  const responseMessage = await submitUserMessage(
-                    example.message
-                  )
+                  const responseMessage = await submitUserMessage(example.type)
 
                   setMessages(currentMessages => [
                     ...currentMessages,
                     responseMessage
                   ])
                 }}
-              >
-                <div className="text-sm font-semibold">{example.heading}</div>
-                <div className="text-sm text-zinc-600">
-                  {example.subheading}
-                </div>
-              </div>
-            ))} */}
+              />
+            ))}
         </div>
 
         {messages?.length >= 2 ? (
