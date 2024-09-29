@@ -13,7 +13,7 @@ export async function generateMetadata({ params: { lng } }: Params) {
   if (languages.indexOf(lng) < 0) lng = fallbackLng
   const { t } = await useTranslation(lng, 'chat')
   return {
-    title: t('pageTitle')
+    title: 'e-podatek'
   }
 }
 

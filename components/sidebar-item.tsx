@@ -71,7 +71,7 @@ export function SidebarItem({ index, chat, children, lng }: SidebarItemProps) {
         )}
       </div>
       <Link
-        href={'/' + lng + chat.path}
+        href={chat.path}
         className={cn(
           buttonVariants({ variant: 'ghost' }),
           'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',

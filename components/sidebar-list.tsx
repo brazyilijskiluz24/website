@@ -31,7 +31,11 @@ export async function SidebarList({ userId, lng }: SidebarListProps) {
             </div>
           ) : (
             <div className="p-8 text-center">
-              <p className="text-sm text-muted-foreground">No chat history</p>
+              <p className="text-sm text-muted-foreground">
+                {userId
+                  ? 'Brak historii czatu'
+                  : 'Brak historii czatu. Zaloguj sięaby umożliwić zapis'}
+              </p>
             </div>
           )}
         </div>

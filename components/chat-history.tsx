@@ -28,7 +28,7 @@ export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
           )}
         >
           <IconPlus className="-translate-x-2 stroke-2" />
-          New Chat
+          Nowy chat
         </Link>
       </div>
       <React.Suspense

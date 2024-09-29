@@ -15,19 +15,7 @@ export async function generateMetadata({ params: { lng } }: Params) {
   if (languages.indexOf(lng) < 0) lng = fallbackLng
   const { t } = await useTranslation(lng, 'common')
   return {
-    title: t('title'),
-    metadataBase: process.env.VERCEL_URL
-      ? new URL(`https://${process.env.VERCEL_URL}`)
-      : undefined,
-    description:
-      'An AI-powered chatbot template built with Next.js and Vercel.',
-    icons: {
-      icon: {
-        url: '/emblem.svg'
-      },
-      shortcut: '/favicon-16x16.png',
-      apple: '/apple-touch-icon.png'
-    }
+    title: 'e-podatek'
   }
 }
 
