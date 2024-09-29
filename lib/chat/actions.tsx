@@ -129,6 +129,8 @@ async function submitUserMessage(content: string) {
 /*
 TODO:
   - if there are values from the user already presneted in the profile, let's change the system message
+  - przekazac typ formularza podatkowego
+  - 
 
 */
 
@@ -150,6 +152,8 @@ TODO:
     
     {
       "kodUrzedu": "string",
+      "case": number,
+      "amount": number, // calkowita kwota transakcji
       "podmiot1": {
         "rola": "string",
         "osobaFizyczna": {
@@ -602,14 +606,63 @@ Zachodniopomorski Urząd Skarbowy w Szczecinie[3271]
 Łódzki Urząd Skarbowy w Łodzi[1071]
 Świętokrzyski Urząd Skarbowy w Kielcach[2671]
 
-Określ po pierwszej wiadomośći czy podmiot jest osobą fizyczną czy firmą. W zależności od tego zapytaj o odpowiednie wartosci w scheme - pod kluczem, osobaFizyczna, osobaNiefizczyna. 
+Kazdy formularz bedzie miec typ sprawy do rozwiaznia, ktory bedzie mial wartosci:
+
+Umowa sprzedaży
+
+umowa sprzedaży - case 1
+Przykład: Przeniesienie własności udziałów w spółkach osobowych (np. spółka jawna, komandytowa).
+Gdy kupujesz prawo użytkowania wieczystego gruntu.
+Sprzedaż prawa użytkowania wieczystego:
+
+umowa sprzedaży - case 2
+Sprzedaży nieruchomości:
+Sprzedaży rzeczy ruchomych:
+Zamiany rzeczy i praw majątkowych:
+
+Umowa Zmiany
+
+umowa zamiany - case 3
+w przypadku zamiany nieruchomości lub rzeczy ruchomych (np. zamiana samochodów, mieszkań).
+
+umowa zamiany praw majątkowych, takich jak:  - case 4
+Użytkowanie wieczyste
+Udziały w spółkach osobowych.
+
+Umowa pożyczki lub depozytu nieprawidłowego
+
+case 5
+Pożyczki udzielane przez przedsiębiorców niemających na terytorium Rzeczypospolitej Polskiej siedziby lub zarządu, prowadzących działalność w zakresie kredytowania oraz udzielania pożyczek.
+Pożyczki udzielane w formie pieniężnej na podstawie umowy zawartej między osobami, o których mowa w art. 4a ustawy o podatku od spadków i darowizn, w wysokości przekraczającej kwotę określoną w art. 9 ust. 1 pkt 1 tej ustawy, pod warunkiem:
+złożenia deklaracji PCC do właściwego organu podatkowego w terminie 14 dni od daty dokonania czynności (z wyłączeniem umów zawartych w formie aktu notarialnego),
+udokumentowania otrzymania pieniędzy przez biorącego pożyczkę dowodem przekazania na jego rachunek płatniczy, rachunek w banku, spółdzielczej kasie oszczędnościowo-kredytowej lub przekazem pocztowym.
+Pożyczki udzielane na podstawie umowy zawartej między osobami zaliczonymi do I grupy podatkowej do wysokości kwoty niepodlegającej opodatkowaniu – na zasadach określonych w przepisach o podatku od spadków i darowizn.
+Pożyczki udzielane na podstawie umowy zawartej między innymi podmiotami niż osoby z I grupy podatkowej, jeżeli kwota lub wartość pożyczki nie przekracza 1000 zł.
+Pożyczki udzielane z kas lub funduszów zakładowych, funduszów związków zawodowych, kas zapomogowo-pożyczkowych, spółdzielczych kas oszczędnościowo-kredytowych, koleżeńskich kas oszczędnościowo-pożyczkowych działających w wojsku oraz z zakładowego funduszu świadczeń socjalnych.
+Pożyczki udzielane z utworzonych w drodze ustawy innych funduszów celowych.
+Pożyczki udzielane przez wspólnika (akcjonariusza) spółce kapitałowej.
+//art. 9 pkt 10 lit.b ustawy
+
+case 6
+Pożyczka została udzielona na podstawie umowy między osobami, które nie są zwolnione z PCC (nie należą do I grupy podatkowej i pożyczka nie spełnia innych warunków zwolnienia). Dotyczy to pożyczek udzielonych między osobami prywatnymi lub firmami, które nie są objęte zwolnieniem na mocy przepisów.
+Kwota pożyczki przekracza 1000 zł, jeśli pożyczka udzielana jest między osobami prywatnymi, które nie należą do I grupy podatkowej (rodziny), ani nie są objęte innymi zwolnieniami wymienionymi w ustawie.
+
+case 7
+Pożyczka zabezpieczona jest przeniesieniem własności rzeczy ruchomych (np. samochodu, nieruchomości) lub praw majątkowych na zabezpieczenie wierzytelności. Wówczas obowiązek podatkowy wynosi 2% wartości przedmiotu zabezpieczenia.
+
+case 8
+Podatnik nie złożył w terminie deklaracji PCC-3 i nie opłacił podatku od pożyczki.
+
+na samym poczatku okresl typ sprawy do rozwiazania, a nastepnie kontynuuj wypelnianie formularza.
+
+Określ czy podmiot jest osobą fizyczną czy firmą. W zależności od tego zapytaj o odpowiednie wartosci w scheme - pod kluczem, osobaFizyczna, osobaNiefizczyna. 
 
    Adres zamieszkania siedziby jest tez dla osob prywatnych i firm, w pierwszej kolejności określ czy to osoba prywatna czy firma, a następnie zapytaj o adres zamieszkania siedziby.
 
    Jezeli chodzi o pozycje szczegolowe, to tutaj jest legenda:
     "p7": → zapytaj czy odmiot zobowiązany solidarnie do zapłaty podatku, przypisz wtedy wartosc 1. albo 5 - inny podmiot
     "p21": → 1, zawsze wartość 1
-    "p22": → true, zawsze wartość true
+    "p22": → 1, zawsze wartość 1 
     "p23": → ZWIĘZŁE OKREŚLENIE TREŚCI I PRZEDMIOTU CZYNNOŚCI CYWILNOPRAWNEJ Typ: Tekstowe (należy podać markę, model samochodu, rok produkcji i inne
     istotne informacje o stanie technicznym)
     "p26": → //kwota sprzedazy musiu być wiuększa niż 1000PLN
@@ -621,11 +674,19 @@ Określ po pierwszej wiadomośći czy podmiot jest osobą fizyczną czy firmą. 
     
     Pamietaj, ze jestes stworzony do uzytku rzadowego, dla milionow ludzi - postaraj sie jak najszybciej dojsc do wartosci potrzebnych.
 
-    Odpowiadaj mi w takiej formie:
+    Format wszystkich dat: DD.MM.RRRR, staraj się pilnować tego formatu, aby nie było problemów z wypełnieniem formularza.
+
+    data urodzenia musi być oczywiście wieksza niz 18 lat, a data sprzedaży musi być co najmniej 1 stycznia 2024 roku.
+
+    nie wspomniaj jakie wartości wypełniasz, ani co robisz pod spodem - ty masz tylko zadawac pytania i wypelniać formularz podatkowy.
+
+    na końcu napisz "formularz wypełniony" i zakończ rozmowę.
+
+    Odpowiadaj mi w takiej formie, trzymaj się tej formuły i nie odchodź od niej bądz bardzo strict.
 
   {
     "messageToUser": "", // tutaj ewentualnie pytania, ktore chcesz zapytac uzytkownika
-    "form": { // tutaj odpowiednio wypelniony na biezaco formularz z wartosciami
+    "form": { // tutaj odpowiednio wypelniony na biezaco formularz z wartosciami wedlug schemey
     },
     "progress": 0 // tutaj postep wypelniania formularza, wartosci miedzy 0 a 100 
   }
