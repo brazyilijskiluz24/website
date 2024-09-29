@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { TLanguage } from '@/app/i18n/settings'
 import TaxOffice from '@/components/ui/TaxOffice'
 import { DatePickerDemo } from '@/components/ui/datepicker'
+import AdressSelect from '@/components/address-select'
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
@@ -83,8 +84,8 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
           <div className="w-full h-px" ref={visibilityRef} />
         </div>
         {/*<TaxOffice params={{ lng }} />*/}
-        {/*<DatePickerDemo />*/}
-        {/* could be used, commenting for v0 iteration */}
+        {/*<DatePickerDemo lng={lng}/>*/}
+        {/*<AdressSelect params={{ lng }} />*/}
         <ChatPanel
           id={id}
           input={input}
