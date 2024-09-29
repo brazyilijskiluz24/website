@@ -83,7 +83,7 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
               lng={lng}
             />
           ) : (
-            <EmptyScreen />
+            <EmptyScreen lng={lng} />
           )}
           <div className="w-full h-px" ref={visibilityRef} />
         </div>

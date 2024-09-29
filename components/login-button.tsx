@@ -8,6 +8,7 @@ import { Button, type ButtonProps } from '@/components/ui/button'
 import { IconGitHub, IconSpinner } from '@/components/ui/icons'
 import { TLanguage } from '@/app/i18n/settings'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from '@/app/i18n/client'
 
 interface LoginButtonProps extends ButtonProps {
   lng: TLanguage
@@ -15,6 +16,8 @@ interface LoginButtonProps extends ButtonProps {
 
 export function LoginButton({ className, ...props }: LoginButtonProps) {
   const router = useRouter()
+  const { t } = useTranslation(props.lng, 'chat')
+
   return (
     <Button
       variant="outline"
@@ -24,7 +27,7 @@ export function LoginButton({ className, ...props }: LoginButtonProps) {
       }}
       className={'w-full justify-start pl-5'}
     >
-      <span>Log in</span>
+      <span>{t('login')}</span>
     </Button>
   )
 }

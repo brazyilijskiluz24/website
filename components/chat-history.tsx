@@ -7,6 +7,7 @@ import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
 import { TLanguage } from '@/app/i18n/settings'
+import { useTranslation } from '@/app/i18n'
 
 interface ChatHistoryProps {
   userId?: string
@@ -14,24 +15,26 @@ interface ChatHistoryProps {
 }
 
 export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
+  const { t } = useTranslation(lng, 'chat')
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between p-4">
         <h4 className="text-sm font-medium mt-4">Historia konwersacji</h4>
       </div>
       {userId && (
-        <div className="mb-2 px-2">
-          <Link
-            href={`/${lng}/`}
-            className={cn(
-              buttonVariants({ variant: 'outline' }),
-              'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
-            )}
-          >
-            <IconPlus className="-translate-x-2 stroke-2" />
-            Nowy chat
-          </Link>
-        </div>
+       <div className="mb-2 px-2">
+        <Link
+          href={`/${lng}/`}
+          className={cn(
+            buttonVariants({ variant: 'outline' }),
+            'h-10 w-full justify-start bg-zinc-50 px-4 shadow-none transition-colors hover:bg-zinc-200/40 dark:bg-zinc-900 dark:hover:bg-zinc-300/10'
+          )}
+        >
+          <IconPlus className="-translate-x-2 stroke-2" />
+          Nowy Chat
+        </Link>
+      </div>
       )}
       <React.Suspense
         fallback={

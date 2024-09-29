@@ -1,10 +1,12 @@
+'use client'
 import { getChats } from '@/app/actions'
 import { ClearHistory } from '@/components/clear-history'
 import { SidebarItems } from '@/components/sidebar-items'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { redirect } from 'next/navigation'
-import { cache } from 'react'
+import { redirect, useRouter } from 'next/navigation'
+import { cache, useEffect, useState } from 'react'
 import { TLanguage } from '@/app/i18n/settings'
+import Select from 'react-select'
 
 interface SidebarListProps {
   userId?: string
@@ -39,6 +41,7 @@ export async function SidebarList({ userId, lng }: SidebarListProps) {
             </div>
           )}
         </div>
+        <ChangeLang />
         <div className="flex items-center justify-between p-4">
           <ThemeToggle />
           <ClearHistory isEnabled={chats?.length > 0} lng={lng} />
@@ -46,4 +49,28 @@ export async function SidebarList({ userId, lng }: SidebarListProps) {
       </div>
     )
   }
+}
+
+const ChangeLang = () => {
+  const [value, setValue] = useState({ value: 'pl', label: 'PL 🇵🇱' })
+  const router = useRouter()
+
+  const onChange = v => {
+    setValue(v)
+    router.push(v.value)
+  }
+
+  return (
+    <Select
+      value={value}
+      menuPlacement={'top'}
+      className={'w-1/2 mb-10 ml-auto mr-6'}
+      isSearchable={false}
+      options={[
+        { value: 'pl', label: 'PL 🇵🇱' },
+        { value: 'en', label: 'EN 🇬🇧' }
+      ]}
+      onChange={onChange}
+    />
+  )
 }

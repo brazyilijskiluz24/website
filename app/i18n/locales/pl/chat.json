@@ -2,5 +2,20 @@
   "pageTitle": "Chat",
   "selectOrSearchTaxOffice": "Wybierz lub wyszukaj urząd skarbowy",
   "pickADate": "Wybierz datę",
-  "selectLocation": "Wybierz lokalizację"
+  "selectLocation": "Wybierz lokalizację",
+  "hello": "Witaj w serwisie e-podatek. Jestem Twoim inteligentnym asystentem,\n        gotowym pomóc Ci w wypełnieniu formularzy podatkowych, dostępny 24/7.",
+  "carTitle": "Zakup samochodu",
+  "carDesc": "Typ sprawy: zakup samochodu",
+  "loanTitle": "Otrzymałem pożyczkę",
+  "loadDesc": "Typ sprawy: otrzymanie pozyczki",
+  "otherTitle": "Gotowe przypadki",
+  "otherDesc": "Wiesz dokładnie co chcesz zrobić? Wybierz jeden z przygotowanych\n                scenariuszy. W przeciwnym wypadku opisz nam jaki masz zamiar.",
+  "newChat": "Nowy chat",
+  "sendMessage": "Wyślij wiadomość",
+  "account": "Konto",
+  "helloMsg": "Witaj! \uD83D\uDC4B",
+  "login": "Zaloguj się",
+  "historyConversation": "Historia konwersacji",
+  "noConversationHistory": "Brak historii czatu",
+  "noConversationHistoryLogin": "Brak historii czatu. Zaloguj sięaby umożliwić zapis"
 }

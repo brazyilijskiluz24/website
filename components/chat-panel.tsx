@@ -12,6 +12,7 @@ import { nanoid } from '@/lib/utils'
 import { UserMessage } from '@/components/stocks/message'
 import ChatCard from '@/components/chat-card'
 import { TLanguage } from '@/app/i18n/settings'
+import { useTranslation } from '@/app/i18n/client'
 
 export interface ChatPanelProps {
   id?: string
@@ -23,7 +24,16 @@ export interface ChatPanelProps {
   lng: TLanguage
 }
 
-export function ChatPanel({ id, title, input, setInput }: ChatPanelProps) {
+export function ChatPanel({
+  id,
+  title,
+  input,
+  setInput,
+  isAtBottom,
+  scrollToBottom,
+  lng
+}: ChatPanelProps) {
+  const { t } = useTranslation(lng, 'chat')
   const [aiState] = useAIState()
   const [messages, setMessages] = useUIState<typeof AI>()
   const { submitUserMessage } = useActions()
@@ -31,12 +41,12 @@ export function ChatPanel({ id, title, input, setInput }: ChatPanelProps) {
 
   const exampleMessages = [
     {
-      heading: 'Zakup samochodu',
+      heading: t('carTitle'),
       image: 'car-purchase.svg',
-      type: 'Typ sprawy: zakup samochodu'
+      type: t('carDesc')
     },
     {
-      heading: 'Otrzymałem pożyczkę',
+      heading: t('loanTitle'),
       image: 'loan.svg',
       type: 'Typ sprawy: otrzymanie pozyczki'
     }
@@ -54,11 +64,8 @@ export function ChatPanel({ id, title, input, setInput }: ChatPanelProps) {
             <div
               className={`rounded-lg border bg-white p-4 dark:bg-zinc-950 dark:hover:bg-zinc-900`}
             >
-              <b>Gotowe przypadki</b>
-              <p>
-                Wiesz dokładnie co chcesz zrobić? Wybierz jeden z przygotowanych
-                scenariuszy. W przeciwnym wypadku opisz nam jaki masz zamiar.
-              </p>
+              <b>{t('otherTitle')}</b>
+              <p>{t('otherDesc')}</p>
             </div>
           </div>
         )}
@@ -118,7 +125,7 @@ export function ChatPanel({ id, title, input, setInput }: ChatPanelProps) {
 
         {/*<div className="absolute bottom-0 w-[calc(100%-2rem)] space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">*/}
         <div className={'absolute bottom-0 right-0 left-0'}>
-          <PromptForm input={input} setInput={setInput} />
+          <PromptForm input={input} setInput={setInput} lng={lng} />
         </div>
       </div>
     </div>
