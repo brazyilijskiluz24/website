@@ -19,7 +19,6 @@ import {
   Purchase
 } from '@/components/stocks'
 
-import { z } from 'zod'
 import { EventsSkeleton } from '@/components/stocks/events-skeleton'
 import { Events } from '@/components/stocks/events'
 import { StocksSkeleton } from '@/components/stocks/stocks-skeleton'
@@ -37,6 +36,77 @@ import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
 // import AddressSelect from '@/components/address-select'
 // import { DatePickerDemo } from '@/components/ui/datepicker'
+import SummaryButton from './SummaryButtons'
+
+import { z } from 'zod'
+import ContinueChat from './ContinueChat'
+import { DatePickerDemo } from '@/components/ui/datepicker'
+import AddressSelect from '@/components/address-select'
+
+const adresPolskiSchema = z.object({
+  kodKraju: z.string(),
+  wojewodztwo: z.string(),
+  powiat: z.string(),
+  gmina: z.string(),
+  ulica: z.string(),
+  nrDomu: z.string(),
+  nrLokalu: z.string(),
+  miejscowosc: z.string(),
+  kodPocztowy: z.string()
+})
+
+const adresZagranicznySchema = z.object({
+  ulica: z.string(),
+  numerDomu: z.string(),
+  kodPocztowy: z.string(),
+  miasto: z.string(),
+  kraj: z.string()
+})
+
+const adresZamieszkaniaSiedzibySchema = z.object({
+  adresPolski: adresPolskiSchema.optional(),
+  adresZagraniczny: adresZagranicznySchema.optional()
+})
+
+const osobaFizycznaSchema = z.object({
+  pesel: z.string(),
+  imiePierwsze: z.string(),
+  nazwisko: z.string(),
+  dataUrodzenia: z.string()
+})
+
+const osobaNiefizycznaSchema = z.object({
+  nip: z.string(),
+  pelnaNazwa: z.string(),
+  skroconaNazwa: z.string()
+})
+
+const podmiot1Schema = z.object({
+  rola: z.string(),
+  osobaFizyczna: osobaFizycznaSchema.optional(),
+  osobaNiefizyczna: osobaNiefizycznaSchema.optional(),
+  adresZamieszkaniaSiedziby: adresZamieszkaniaSiedzibySchema
+})
+
+const pozycjeSzczegoloweSchema = z.object({
+  p7: z.number(),
+  p21: z.number(),
+  p22: z.number(),
+  p23: z.string(),
+  p26: z.number(),
+  p62: z.number()
+})
+
+const mainSchema = z.object({
+  kodUrzedu: z.string(),
+  case: z.number(),
+  amount: z.number().describe('calkowita kwota transakcji'),
+  podmiot1: podmiot1Schema,
+  pozycjeSzczegolowe: pozycjeSzczegoloweSchema,
+  data: z.string()
+})
+
+// export type MainSchemaType = z.infer<typeof mainSchema>
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
@@ -108,6 +178,24 @@ async function confirmPurchase(symbol: string, price: number, amount: number) {
   }
 }
 
+async function onlyUpdateUserMessage(content: string) {
+  'use server'
+
+  const aiState = getMutableAIState<typeof AI>()
+
+  aiState.done({
+    ...aiState.get(),
+    messages: [
+      ...aiState.get().messages,
+      {
+        id: nanoid(),
+        role: 'assistant',
+        content: '12.12.2000'
+      }
+    ]
+  })
+}
+
 async function submitUserMessage(content: string) {
   'use server'
 
@@ -128,7 +216,7 @@ async function submitUserMessage(content: string) {
   let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
   let textNode: undefined | React.ReactNode
 
-/*
+  /*
 TODO:
   - if there are values from the user already presneted in the profile, let's change the system message
   - przekazac typ formularza podatkowego
@@ -136,7 +224,7 @@ TODO:
 
 */
 
-console.log({ content })
+  console.log({ content })
 
   const result = await streamUI({
     model: openai('gpt-4o'),
@@ -684,13 +772,15 @@ Określ czy podmiot jest osobą fizyczną czy firmą. W zależności od tego zap
 
     nie wspomniaj jakie wartości wypełniasz, ani co robisz pod spodem - ty masz tylko zadawac pytania i wypelniać formularz podatkowy.
 
-    na końcu napisz "formularz wypełniony" i zakończ rozmowę.
-
     Odpowiadaj mi w takiej formie, trzymaj się tej formuły i nie odchodź od niej bądz bardzo strict.
 
     jezeli nie supportujesz jakiegoś przypadku to powiedz ze nie obslugujesz i zeby sprobowac manualnie to obsluzyć i nie drukuj tego obiektu.
 
     upewnij się prosze, ze masz wsyzstkie wartosci potrzebne - cala logika nie zadziala jak nie bedzie jednej z wartosci.
+
+    w przypadku dat wywoal funkcje get_date, ktora zwraca date w odpowiednim formacie.
+
+    gdy juz myslisz ze wszystko jest gotowe to dopisz do obiektu "form" wartość true do klucza "final". i wywoałaj funkcje execute_form, i przekaesz do niej obiekt formularza.
 
   {
     "messageToUser": "", // tutaj ewentualnie pytania, ktore chcesz zapytac uzytkownika
@@ -733,93 +823,56 @@ Określ czy podmiot jest osobą fizyczną czy firmą. W zależności od tego zap
       return textNode
     },
     tools: {
-      // getAddress: {
-      //   description:
-      //     'Execute when the user asks for an address. Use this to get the address from the user.',
-      //   parameters: z.object({}),
-      //   generate: async function* ({  }) {
-      //     yield (
-      //       <BotCard>
-      //         <EventsSkeleton />
-      //       </BotCard>
-      //     )
+      executeForm: {
+        description: 'Execute when theres final form ready to be sumitted!',
+        parameters: z.object({
+          form: mainSchema
+        }),
+        generate: async function* ({ form }) {
+          yield (
+            <BotCard>
+              <EventsSkeleton />
+            </BotCard>
+          )
 
-      //     const toolCallId = nanoid()
-      //     console.log(toolCallId)
-      //     aiState.done({
-      //       ...aiState.get(),
-      //       messages: [
-      //         ...aiState.get().messages,
-      //         {
-      //           id: nanoid(),
-      //           role: 'tool',
-      //           content: [
-      //             {
-      //               type: 'tool-result',
-      //               toolName: 'getAddress',
-      //               toolCallId,
-      //               result: {}
-      //             }
-      //           ]
-      //         }
-      //       ]
-      //     })
-      //     // TODO: export data from her
-      //     return (
-      //       <BotCard>
-      //         <p>Wybierz lokalizację za pomocą poniższego formularza: </p>
-      //         <br></br>
-      //         <AddressSelect params={
-      //           {
-      //             lng: 'pl'
-      //           }
-      //         } />
-      //       </BotCard>
-      //     )
-      //   }
-      // },
-      // getDate: {
-      //   description:
-      //     'Execute when the theres need to provide a date. Use this to get the date from the user.',
-      //   parameters: z.object({}),
-      //   generate: async function* ({  }) {
-      //     yield (
-      //       <BotCard>
-      //         <EventsSkeleton />
-      //       </BotCard>
-      //     )
+          try {
+            const response = await fetch(
+              'https://hackyeah2024-api-v1.azurewebsites.net/xml',
+              {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(form)
+              }
+            )
 
-      //     const toolCallId = nanoid()
+            const statusCode = response.status
+            console.log('Status code:', statusCode)
 
-      //     console.log(toolCallId)
-      //     // aiState.done({
-      //     //   ...aiState.get(),
-      //     //   messages: [
-      //     //     ...aiState.get().messages,
-      //     //     {
-      //     //       id: nanoid(),
-      //     //       role: 'tool',
-      //     //       content: [
-      //     //         {
-      //     //           type: 'tool-result',
-      //     //           toolName: 'getDate',
-      //     //           toolCallId,
-      //     //           result: {}
-      //     //         }
-      //     //       ]
-      //     //     }
-      //     //   ]
-      //     // })
-      //     // TODO: export data from her
-      //     return (
-      //       <BotCard>
-      //         <p>Wybierz datę za pomocą poniższego formularza: </p>
-      //         <br></br>
-      //         <DatePickerDemo lng={'pl'} selectDate={() => {}} />
-      //       </BotCard>
-      //     )
-      //   }
-      // },
+            // If you need the response data as well
+            const data = await response.text()
+            console.log('Response data:', data)
+
+            return (
+              <>
+                <h1>Sukces! 🎉</h1>
+                <br></br>
+                <p>
+                  Formularz został poprawnie wypełniony, teraz możesz go pobrać
+                  i zaimportować w oficjalnym systemie!
+                </p>
+                <br></br>
+                <SummaryButton xmlContent={data} />
+              </>
+            )
+          } catch (error) {
+            console.error('Error:', error)
+          }
+
+          return <div>Failed to create `.xml` response</div>
+        }
+      }
     }
   })
 
@@ -841,6 +894,7 @@ export type UIState = {
 
 export const AI = createAI<AIState, UIState>({
   actions: {
+    onlyUpdateUserMessage,
     submitUserMessage,
     confirmPurchase
   },

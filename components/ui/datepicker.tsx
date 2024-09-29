@@ -5,7 +5,7 @@ import { format } from 'date-fns'
 import { Calendar as CalendarIcon } from 'lucide-react'
 import { pl } from 'date-fns/locale'
 
-import { cn } from '@/lib/utils'
+import { cn, nanoid } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -15,10 +15,16 @@ import {
 } from '@/components/ui/popover'
 import { TLanguage } from '@/app/i18n/settings'
 import { useTranslation } from '@/app/i18n/client'
+import { useActions, useUIState } from 'ai/rsc'
+import { AI } from '@/lib/chat/actions'
+import { UserMessage } from '../stocks/message'
+import dayjs from 'dayjs'
 
 export function DatePickerDemo({ lng }: { lng: TLanguage }) {
   const [date, setDate] = React.useState<Date>()
   const { t } = useTranslation(lng, 'chat')
+
+  const [, setMessages] = useUIState<typeof AI>()
 
   return (
     <Popover>
@@ -40,7 +46,19 @@ export function DatePickerDemo({ lng }: { lng: TLanguage }) {
           locale={pl}
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={async (date) => {
+            const formattedDate = dayjs(date).format('DD.MM.YYYY')
+
+            setMessages(currentMessages => [
+              ...currentMessages,
+              {
+                id: nanoid(),
+                display: <UserMessage>{formattedDate}</UserMessage>
+              }
+            ])
+
+            setDate(date)
+          }}
           initialFocus
         />
       </PopoverContent>
