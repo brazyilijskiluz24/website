@@ -85,14 +85,14 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
         </div>
         {/*<TaxOffice params={{ lng }} />*/}
         {/*<DatePickerDemo lng={lng}/>*/}
-        {/*<AdressSelect params={{ lng }} />*/}
-        <ChatPanel
-          id={id}
-          input={input}
-          setInput={setInput}
-          isAtBottom={isAtBottom}
-          scrollToBottom={scrollToBottom}
-        />
+        <AdressSelect params={{ lng }} />
+        {/*<ChatPanel*/}
+        {/*  id={id}*/}
+        {/*  input={input}*/}
+        {/*  setInput={setInput}*/}
+        {/*  isAtBottom={isAtBottom}*/}
+        {/*  scrollToBottom={scrollToBottom}*/}
+        {/*/>*/}
       </div>
     </div>
   )

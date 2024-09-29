@@ -4,28 +4,38 @@ import React from 'react'
 import { useTranslation } from '@/app/i18n/client'
 import { Params } from '@/app/layout'
 import AsyncSelect from 'react-select/async'
+import debounce from 'lodash.debounce'
 
 const getAddresses = async (
   inputValue: string,
   callback: (options: any) => void
 ) => {
   const req = await fetch(
-    `https://nominatim.openstreetmap.org/$q=${inputValue}`
+    `https://nominatim.openstreetmap.org/search?q=${inputValue}&format=json`
   )
-  return await req.json()
+  const res = await req.json()
+  console.log('res:', res)
+  if (Array.isArray(res)) {
+    return res.map(v => ({
+      label: v.display_name,
+      value: { x: v.lat, y: v.lon }
+    }))
+  }
 }
 
 const AddressSelect = ({ params }: Params) => {
   const { t } = useTranslation(params.lng, 'chat')
 
   return (
-    <AsyncSelect
-      cacheOptions
-      loadOptions={getAddresses}
-      placeholder={t('selectOrSearchTaxOffice')}
-      className={'mx-auto w-full'}
-      options={taxOfices.map(v => ({ value: v, label: v }))}
-    />
+    <div className={'mb-'}>
+      <AsyncSelect
+        cacheOptions
+        loadOptions={getAddresses}
+        placeholder={t('selectOrSearchTaxOffice')}
+        className={'mx-auto w-full'}
+        options={taxOfices.map(v => ({ value: v, label: v }))}
+      />
+    </div>
   )
 }
 
