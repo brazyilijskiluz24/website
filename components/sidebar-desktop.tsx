@@ -10,24 +10,25 @@ import { ChatHistory } from '@/components/chat-history'
 import { Params } from '@/app/layout'
 import { useSidebar } from '@/lib/hooks/use-sidebar'
 import { Header } from '@/components/header'
+import { User } from 'next-auth'
 
 export async function SidebarDesktop({ params }: Params) {
   const session = await auth()
 
-  if (!session?.user?.id) {
-    return null
-  }
+  // if (!session?.user?.id) {
+  //   return null
+  // }
 
   return (
     <Sidebar className="peer pt-6 mb-10  absolute inset-y-0 z-30 bg-white hidden -translate-x-full border-r duration-300 ease-in-out data-[state=open]:translate-x-0 lg:flex lg:w-[250px] xl:w-[300px]">
       <Header />
-      <Profile />
-      <ChatHistory userId={session.user.id} lng={params.lng} />
+      <Profile user={session?.user} />
+      <ChatHistory userId={session?.user?.id} lng={params.lng} />
     </Sidebar>
   )
 }
 
-const Profile = () => {
+const Profile = (props: { user?: User }) => {
   return (
     <div>
       <div className={'flex items-center mt-10 lg:px-4 xl:px-6'}>

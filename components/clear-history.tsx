@@ -18,14 +18,15 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { IconSpinner } from '@/components/ui/icons'
+import { clearChats } from '@/app/actions'
+import { TLanguage } from '@/app/i18n/settings'
 
 interface ClearHistoryProps {
   isEnabled: boolean
+  lng: TLanguage
 }
 
-export function ClearHistory({
-  isEnabled = false,
-}: ClearHistoryProps) {
+export function ClearHistory({ isEnabled = false, lng }: ClearHistoryProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
   const router = useRouter()
@@ -53,9 +54,7 @@ export function ClearHistory({
             onClick={event => {
               event.preventDefault()
               startTransition(async () => {
-                // FIXME clearChats() is not defined
-                // @ts-ignore
-                const result = await clearChats()
+                const result = await clearChats(lng)
                 if (result && 'error' in result) {
                   toast.error(result.error)
                   return
