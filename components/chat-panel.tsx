@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { saveGuestChat, shareChat } from '@/app/actions'
+import { shareChat } from '@/app/actions'
 import { Button } from '@/components/ui/button'
 import { PromptForm } from '@/components/prompt-form'
 import { ButtonScrollToBottom } from '@/components/button-scroll-to-bottom'
@@ -41,23 +41,13 @@ export function ChatPanel({
     {
       heading: 'Zakup samochodu',
       image: 'car-purchase.svg',
-      type: 'car'
+      type: 'Typ sprawy: zakup samochodu'
     },
     {
       heading: 'Otrzymałem pożyczkę',
       image: 'loan.svg',
-      type: 'loan'
+      type: 'Typ sprawy: otrzymanie pozyczki'
     },
-    {
-      heading: 'Wyrok sądu lub ugoda',
-      image: 'court-decision.svg',
-      type: 'court'
-    },
-    {
-      heading: 'Inna sprawa',
-      image: 'other.svg',
-      type: 'other'
-    }
   ]
 
   return (

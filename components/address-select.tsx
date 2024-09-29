@@ -30,6 +30,7 @@ const AddressSelect = ({ params }: Params) => {
     <div className={'mb-'}>
       <AsyncSelect
         cacheOptions
+        // @ts-ignore
         loadOptions={getAddresses}
         placeholder={t('selectLocation')}
         className={'mx-auto w-full'}

@@ -25,6 +25,7 @@ const Map = ({ position, id }: MarkerProps) => {
       )}
       <MapContainer
         id={id}
+        // @ts-ignore
         position={position}
         whenReady={() => setIsLoaded(true)}
         center={position}
