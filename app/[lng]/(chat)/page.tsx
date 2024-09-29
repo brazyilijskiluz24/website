@@ -7,6 +7,7 @@ import { getMissingKeys } from '@/app/actions'
 import { useTranslation } from '@/app/i18n'
 import { Params } from '@/app/[lng]/layout'
 import { fallbackLng, languages } from '@/app/i18n/settings'
+import OpenSidebar from '@/components/open-sidebar'
 
 export async function generateMetadata({ params: { lng } }: Params) {
   if (languages.indexOf(lng) < 0) lng = fallbackLng
@@ -22,14 +23,16 @@ export default async function IndexPage({ params }: Params) {
   const missingKeys = await getMissingKeys()
 
   return (
-    // <div>asd</div>
-    <AI initialAIState={{ chatId: id, messages: [] }}>
-      <Chat
-        id={id}
-        session={session}
-        missingKeys={missingKeys}
-        lng={params.lng}
-      />
-    </AI>
+    <>
+      <OpenSidebar />
+      <AI initialAIState={{ chatId: id, messages: [] }}>
+        <Chat
+          id={id}
+          session={session}
+          missingKeys={missingKeys}
+          lng={params.lng}
+        />
+      </AI>
+    </>
   )
 }

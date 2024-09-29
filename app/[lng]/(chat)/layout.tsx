@@ -3,6 +3,8 @@ import { fallbackLng, languages } from '@/app/i18n/settings'
 import { useTranslation } from '@/app/i18n'
 import { Params } from '@/app/[lng]/layout'
 import TaxOffice from '@/components/ui/TaxOffice'
+import { DoubleArrowLeftIcon } from '@radix-ui/react-icons'
+import { MobileHeader } from '@/components/mobile-header'
 
 export async function generateStaticParams() {
   return languages.map(lng => ({ lng }))
@@ -25,8 +27,9 @@ export default async function ChatLayout({
   params: { lng }
 }: ChatLayoutProps) {
   return (
-    <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
+    <div className="relative flex h-screen  overflow-hidden">
       <SidebarDesktop params={{ lng }} />
+      <MobileHeader params={{ lng }} />
       {children}
     </div>
   )

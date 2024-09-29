@@ -37,7 +37,7 @@ export async function SidebarList({ userId, lng }: SidebarListProps) {
         </div>
         <div className="flex items-center justify-between p-4">
           <ThemeToggle />
-          <ClearHistory isEnabled={chats?.length > 0} />
+          <ClearHistory isEnabled={chats?.length > 0} lng={lng} />
         </div>
       </div>
     )
