@@ -5,6 +5,7 @@ import '@/app/globals.css'
 import { cn } from '@/lib/utils'
 import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
+import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
 import { fallbackLng, languages, TLanguage } from '@/app/i18n/settings'
 import { useTranslation } from '@/app/i18n'
@@ -49,13 +50,6 @@ export async function generateMetadata({ params: { lng } }: Params) {
   }
 }
 
-export const viewport = {
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: 'white' },
-    { media: '(prefers-color-scheme: dark)', color: 'black' }
-  ]
-}
-
 interface RootLayoutProps {
   children: React.ReactNode
   params: {
@@ -79,7 +73,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Toaster position="top-center" />
         <Providers
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="white"
           enableSystem
           disableTransitionOnChange
         >
