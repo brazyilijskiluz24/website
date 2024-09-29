@@ -41,23 +41,13 @@ export function ChatPanel({
     {
       heading: 'Zakup samochodu',
       image: 'car-purchase.svg',
-      type: 'car'
+      type: 'Typ sprawy: zakup samochodu'
     },
     {
       heading: 'Otrzymałem pożyczkę',
       image: 'loan.svg',
-      type: 'loan'
+      type: 'Typ sprawy: otrzymanie pozyczki'
     },
-    {
-      heading: 'Wyrok sądu lub ugoda',
-      image: 'court-decision.svg',
-      type: 'court'
-    },
-    {
-      heading: 'Inna sprawa',
-      image: 'other.svg',
-      type: 'other'
-    }
   ]
 
   return (

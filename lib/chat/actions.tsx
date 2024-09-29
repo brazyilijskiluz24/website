@@ -35,9 +35,8 @@ import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
-import { headers } from 'next/headers'
-import { fallbackLng, languages } from '@/app/i18n/settings'
-import { redirect } from 'next/navigation'
+// import AddressSelect from '@/components/address-select'
+// import { DatePickerDemo } from '@/components/ui/datepicker'
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
@@ -129,24 +128,576 @@ async function submitUserMessage(content: string) {
   let textStream: undefined | ReturnType<typeof createStreamableValue<string>>
   let textNode: undefined | React.ReactNode
 
+/*
+TODO:
+  - if there are values from the user already presneted in the profile, let's change the system message
+  - przekazac typ formularza podatkowego
+  - 
+
+*/
+
+console.log({ content })
+
   const result = await streamUI({
     model: openai('gpt-4o'),
     initial: <SpinnerMessage />,
     system: `\
-    You are a stock trading conversation bot and you can help users buy stocks, step by step.
-    You and the user can discuss stock prices and the user can adjust the amount of stocks they want to buy, or place an order, in the UI.
+   Jesteś botem konweracyjnym do pomocy z doradctwem podatkowym, który pomaga użytkowniki w wypełnianiu formularzy podatkowych.
 
-    Messages inside [] means that it's a UI element or a user event. For example:
-    - "[Price of AAPL = 100]" means that an interface of the stock price of AAPL is shown to the user.
-    - "[User has changed the amount of AAPL to 10]" means that the user has changed the amount of AAPL to 10 in the UI.
+    Musisz wyciagnąć od użytkownika wszystkie potrzebne informacje, aby wypelnic formularz podatkowy. Jezeli myslisz, ze nie masz jakiejs informacji, zapytaj o nia.
 
-    If the user requests purchasing a stock, call \`show_stock_purchase_ui\` to show the purchase UI.
-    If the user just wants the price, call \`show_stock_price\` to show the price.
-    If you want to show trending stocks, call \`list_stocks\`.
-    If you want to show events, call \`get_events\`.
-    If the user wants to sell stock, or complete another impossible task, respond that you are a demo and cannot do that.
+    Masz być przyjaznym i odpytywać po koleji kazdą informacje, porste krótkie pytania.
 
-    Besides that, you can also chat with users and do some calculations if needed.`,
+    Pytaj o jedną wartość na kazde pytanie. W przypadku adresu pytaj o kod pocztowy, miasto, ulice, numer domu, numer lokalu w jednym pytaniu.
+
+    Osoba fizyczna nie potrzebuję NIPu.
+
+    Tutaj sa wartości jakich potrzebujesz:
+    
+    {
+      "kodUrzedu": "string",
+      "case": number,
+      "amount": number, // calkowita kwota transakcji
+      "podmiot1": {
+        "rola": "string",
+        "osobaFizyczna": {
+          "nip": "string",
+          "pesel": "string",
+          "imiePierwsze": "string",
+          "nazwisko": "string",
+          "dataUrodzenia": "string"
+        },
+        "osobaNiefizyczna": {
+          "nip": "string",
+          "pelnaNazwa": "string",
+          "skroconaNazwa": "string"
+        },
+        "adresZamieszkaniaSiedziby": {
+          "adresPolski": {
+            "kodKraju": "string",
+            "wojewodztwo": "string",
+            "powiat": "string",
+            "gmina": "string",
+            "ulica": "string",
+            "nrDomu": "string",
+            "nrLokalu": "string",
+            "miejscowosc": "string",
+            "kodPocztowy": "string"
+          },
+          "adresZagraniczny": {
+            "ulica": "string",
+            "numerDomu": "string",
+            "kodPocztowy": "string",
+            "miasto": "string",
+            "kraj": "string"
+          }
+        }
+      },
+      "pozycjeSzczegolowe": {
+        "p7": 0,
+        "p21": 0,
+        "p22": 0,
+        "p23": "string",
+        "p26": 0,
+        "p62": 0
+      },
+      "data": "string"
+    }
+
+    Teraz tutaj opiszę co oznaczają poszczególne wartości.
+
+[kodUrzedu]
+Tutaj są wszystkie kody urzędów. Ty masz wybrać odpowiedni kod urzędu skarbowego, do którego ma trafić formularz podatkowy. Jezeli uzytkownik nie podał do jakiego urzędu ma trafić, to spróbuj określić na podstawie adresu. Jezeli nie ma adresu wywolaj funkcje "select_gov".
+
+Dolnośląski Urząd Skarbowy we Wrocławiu[0271]
+Drugi Mazowiecki Urząd Skarbowy w Warszawie[1472]
+Drugi Urząd Skarbowy Kraków[1228]
+Drugi Urząd Skarbowy Warszawa-Śródmieście[1436]
+Drugi Urząd Skarbowy w Białymstoku[2004]
+Drugi Urząd Skarbowy w Bielsku-Białej[2404]
+Drugi Urząd Skarbowy w Bydgoszczy[0405]
+Drugi Urząd Skarbowy w Częstochowie[2410]
+Drugi Urząd Skarbowy w Gdańsku[2206]
+Drugi Urząd Skarbowy w Gdyni[2209]
+Drugi Urząd Skarbowy w Gliwicach[2413]
+Drugi Urząd Skarbowy w Kaliszu[3008]
+Drugi Urząd Skarbowy w Katowicach[2417]
+Drugi Urząd Skarbowy w Kielcach[2605]
+Drugi Urząd Skarbowy w Koszalinie[3211]
+Drugi Urząd Skarbowy w Lublinie[0611]
+Drugi Urząd Skarbowy w Opolu[1610]
+Drugi Urząd Skarbowy w Radomiu[1425]
+Drugi Urząd Skarbowy w Rzeszowie[1822]
+Drugi Urząd Skarbowy w Szczecinie[3216]
+Drugi Urząd Skarbowy w Tarnowie[1224]
+Drugi Urząd Skarbowy w Toruniu[0417]
+Drugi Urząd Skarbowy w Zielonej Górze[0809]
+Drugi Urząd Skarbowy Łódź-Bałuty[1009]
+Drugi Urząd Skarbowy Łódź-Górna[1011]
+Drugi Wielkopolski Urząd Skarbowy w Kaliszu[3072]
+Drugi Śląski Urząd Skarbowy w Bielsku-Białej[2472]
+Kujawsko-Pomorski Urząd Skarbowy w Bydgoszczy[0471]
+Lubelski Urząd Skarbowy w Lublinie[0671]
+Lubuski Urząd Skarbowy w Zielonej Górze[0871]
+Małopolski Urząd Skarbowy w Krakowie[1271]
+Opolski Urząd Skarbowy w Opolu[1671]
+Pierwszy Mazowiecki Urząd Skarbowy w Warszawie[1471]
+Pierwszy Urząd Skarbowy Warszawa-Śródmieście[1435]
+Pierwszy Urząd Skarbowy w Białymstoku[2003]
+Pierwszy Urząd Skarbowy w Bielsku-Białej[2403]
+Pierwszy Urząd Skarbowy w Bydgoszczy[0404]
+Pierwszy Urząd Skarbowy w Częstochowie[2409]
+Pierwszy Urząd Skarbowy w Gdańsku[2205]
+Pierwszy Urząd Skarbowy w Gdyni[2208]
+Pierwszy Urząd Skarbowy w Gliwicach[2412]
+Pierwszy Urząd Skarbowy w Kaliszu[3007]
+Pierwszy Urząd Skarbowy w Katowicach[2416]
+Pierwszy Urząd Skarbowy w Kielcach[2604]
+Pierwszy Urząd Skarbowy w Koszalinie[3210]
+Pierwszy Urząd Skarbowy w Krakowie[1207]
+Pierwszy Urząd Skarbowy w Lublinie[0610]
+Pierwszy Urząd Skarbowy w Opolu[1609]
+Pierwszy Urząd Skarbowy w Poznaniu[3023]
+Pierwszy Urząd Skarbowy w Radomiu[1424]
+Pierwszy Urząd Skarbowy w Rzeszowie[1816]
+Pierwszy Urząd Skarbowy w Szczecinie[3215]
+Pierwszy Urząd Skarbowy w Tarnowie[1223]
+Pierwszy Urząd Skarbowy w Toruniu[0416]
+Pierwszy Urząd Skarbowy w Zielonej Górze[0808]
+Pierwszy Urząd Skarbowy we Wrocławiu[0229]
+Pierwszy Urząd Skarbowy Łódź-Bałuty[1008]
+Pierwszy Urząd Skarbowy Łódź-Górna[1010]
+Pierwszy Wielkopolski Urząd Skarbowy w Poznaniu[3071]
+Pierwszy Śląski Urząd Skarbowy w Sosnowcu[2471]
+Podkarpacki Urząd Skarbowy w Rzeszowie[1871]
+Podlaski Urząd Skarbowy w Białymstoku[2071]
+Pomorski Urząd Skarbowy w Gdańsku[2271]
+Trzeci Mazowiecki Urząd Skarbowy w Radomiu[1473]
+Trzeci Urząd Skarbowy Warszawa-Śródmieście[1449]
+Trzeci Urząd Skarbowy w Bydgoszczy[0406]
+Trzeci Urząd Skarbowy w Gdańsku[2207]
+Trzeci Urząd Skarbowy w Lublinie[0612]
+Trzeci Urząd Skarbowy w Szczecinie[3217]
+Urząd Skarbowy Kraków-Krowodrza[1208]
+Urząd Skarbowy Kraków-Nowa Huta[1209]
+Urząd Skarbowy Kraków-Podgórze[1210]
+Urząd Skarbowy Kraków-Prądnik[1211]
+Urząd Skarbowy Kraków-Stare Miasto[1212]
+Urząd Skarbowy Kraków-Śródmieście[1213]
+Urząd Skarbowy Poznań-Grunwald[3020]
+Urząd Skarbowy Poznań-Jeżyce[3021]
+Urząd Skarbowy Poznań-Nowe Miasto[3022]
+Urząd Skarbowy Poznań-Wilda[3026]
+Urząd Skarbowy Poznań-Winogrady[3025]
+Urząd Skarbowy Warszawa-Bemowo[1431]
+Urząd Skarbowy Warszawa-Bielany[1432]
+Urząd Skarbowy Warszawa-Mokotów[1433]
+Urząd Skarbowy Warszawa-Praga[1434]
+Urząd Skarbowy Warszawa-Targówek[1437]
+Urząd Skarbowy Warszawa-Ursynów[1438]
+Urząd Skarbowy Warszawa-Wawer[1439]
+Urząd Skarbowy Warszawa-Wola[1440]
+Urząd Skarbowy Wrocław-Fabryczna[0224]
+Urząd Skarbowy Wrocław-Krzyki[0225]
+Urząd Skarbowy Wrocław-Psie Pole[0226]
+Urząd Skarbowy Wrocław-Stare Miasto[0227]
+Urząd Skarbowy Wrocław-Śródmieście[0228]
+Urząd Skarbowy w Aleksandrowie Kujawskim[0402]
+Urząd Skarbowy w Augustowie[2002]
+Urząd Skarbowy w Bartoszycach[2802]
+Urząd Skarbowy w Bełchatowie[1002]
+Urząd Skarbowy w Białej Podlaskiej[0602]
+Urząd Skarbowy w Białobrzegach[1402]
+Urząd Skarbowy w Białogardzie[3202]
+Urząd Skarbowy w Bielsku Podlaskim[2005]
+Urząd Skarbowy w Biłgoraju[0603]
+Urząd Skarbowy w Bochni[1202]
+Urząd Skarbowy w Bolesławcu[0202]
+Urząd Skarbowy w Braniewie[2803]
+Urząd Skarbowy w Brodnicy[0403]
+Urząd Skarbowy w Brzegu[1602]
+Urząd Skarbowy w Brzesku[1203]
+Urząd Skarbowy w Brzezinach[1003]
+Urząd Skarbowy w Brzozowie[1802]
+Urząd Skarbowy w Busku-Zdroju[2602]
+Urząd Skarbowy w Bystrzycy Kłodzkiej[0203]
+Urząd Skarbowy w Bytomiu[2405]
+Urząd Skarbowy w Bytowie[2202]
+Urząd Skarbowy w Będzinie[2402]
+Urząd Skarbowy w Chełmie[0604]
+Urząd Skarbowy w Chełmnie[0407]
+Urząd Skarbowy w Chodzieży[3037]
+Urząd Skarbowy w Chojnicach[2203]
+Urząd Skarbowy w Chorzowie[2406]
+Urząd Skarbowy w Choszcznie[3203]
+Urząd Skarbowy w Chrzanowie[1204]
+Urząd Skarbowy w Ciechanowie[1403]
+Urząd Skarbowy w Cieszynie[2407]
+Urząd Skarbowy w Czarnkowie[3002]
+Urząd Skarbowy w Czechowicach-Dziedzicach[2408]
+Urząd Skarbowy w Człuchowie[2204]
+Urząd Skarbowy w Drawsku Pomorskim[3204]
+Urząd Skarbowy w Drezdenku[0812]
+Urząd Skarbowy w Działdowie[2804]
+Urząd Skarbowy w Dzierżoniowie[0204]
+Urząd Skarbowy w Dąbrowie Górniczej[2411]
+Urząd Skarbowy w Dąbrowie Tarnowskiej[1205]
+Urząd Skarbowy w Dębicy[1803]
+Urząd Skarbowy w Elblągu[2805]
+Urząd Skarbowy w Ełku[2806]
+Urząd Skarbowy w Garwolinie[1404]
+Urząd Skarbowy w Giżycku[2807]
+Urząd Skarbowy w Gnieźnie[3003]
+Urząd Skarbowy w Goleniowie[3205]
+Urząd Skarbowy w Golubiu-Dobrzyniu[0422]
+Urząd Skarbowy w Gorlicach[1206]
+Urząd Skarbowy w Gorzowie Wielkopolskim[0802]
+Urząd Skarbowy w Gostyninie[1405]
+Urząd Skarbowy w Gostyniu[3004]
+Urząd Skarbowy w Grajewie[2006]
+Urząd Skarbowy w Grodzisku Mazowieckim[1406]
+Urząd Skarbowy w Grodzisku Wielkopolskim[3005]
+Urząd Skarbowy w Grudziądzu[0408]
+Urząd Skarbowy w Gryficach[3206]
+Urząd Skarbowy w Gryfinie[3207]
+Urząd Skarbowy w Grójcu[1407]
+Urząd Skarbowy w Górze[0233]
+Urząd Skarbowy w Głogowie[0205]
+Urząd Skarbowy w Głownie[1004]
+Urząd Skarbowy w Głubczycach[1603]
+Urząd Skarbowy w Hajnówce[2015]
+Urząd Skarbowy w Hrubieszowie[0605]
+Urząd Skarbowy w Inowrocławiu[0409]
+Urząd Skarbowy w Iławie[2808]
+Urząd Skarbowy w Janowie Lubelskim[0606]
+Urząd Skarbowy w Jarocinie[3006]
+Urząd Skarbowy w Jarosławiu[1804]
+Urząd Skarbowy w Jastrzębiu-Zdroju[2414]
+Urząd Skarbowy w Jaworze[0206]
+Urząd Skarbowy w Jaworznie[2415]
+Urząd Skarbowy w Jaśle[1805]
+Urząd Skarbowy w Jeleniej Górze[0207]
+Urząd Skarbowy w Jędrzejowie[2603]
+Urząd Skarbowy w Kamieniu Pomorskim[3208]
+Urząd Skarbowy w Kamiennej Górze[0208]
+Urząd Skarbowy w Kartuzach[2210]
+Urząd Skarbowy w Kazimierzy Wielkiej[2614]
+Urząd Skarbowy w Kluczborku[1605]
+Urząd Skarbowy w Kolbuszowej[1806]
+Urząd Skarbowy w Kole[3010]
+Urząd Skarbowy w Kolnie[2007]
+Urząd Skarbowy w Koninie[3011]
+Urząd Skarbowy w Kozienicach[1408]
+Urząd Skarbowy w Kołobrzegu[3209]
+Urząd Skarbowy w Końskich[2606]
+Urząd Skarbowy w Kościanie[3012]
+Urząd Skarbowy w Kościerzynie[2211]
+Urząd Skarbowy w Krapkowicach[1613]
+Urząd Skarbowy w Krasnymstawie[0607]
+Urząd Skarbowy w Kraśniku[0608]
+Urząd Skarbowy w Krotoszynie[3013]
+Urząd Skarbowy w Krośnie[1807]
+Urząd Skarbowy w Krośnie Odrzańskim[0803]
+Urząd Skarbowy w Kutnie[1005]
+Urząd Skarbowy w Kwidzynie[2212]
+Urząd Skarbowy w Kędzierzynie-Koźlu[1604]
+Urząd Skarbowy w Kępnie[3009]
+Urząd Skarbowy w Kętrzynie[2809]
+Urząd Skarbowy w Kłobucku[2418]
+Urząd Skarbowy w Kłodzku[0209]
+Urząd Skarbowy w Legionowie[1409]
+Urząd Skarbowy w Legnicy[0210]
+Urząd Skarbowy w Lesku[1808]
+Urząd Skarbowy w Lesznie[3014]
+Urząd Skarbowy w Leżajsku[1809]
+Urząd Skarbowy w Limanowej[1214]
+Urząd Skarbowy w Lipnie[0410]
+Urząd Skarbowy w Lipsku[1447]
+Urząd Skarbowy w Lubaczowie[1810]
+Urząd Skarbowy w Lubaniu[0211]
+Urząd Skarbowy w Lubartowie[0609]
+Urząd Skarbowy w Lubinie[0212]
+Urząd Skarbowy w Lublińcu[2419]
+Urząd Skarbowy w Lwówku Śląskim[0213]
+Urząd Skarbowy w Lęborku[2213]
+Urząd Skarbowy w Makowie Mazowieckim[1411]
+Urząd Skarbowy w Malborku[2214]
+Urząd Skarbowy w Miechowie[1215]
+Urząd Skarbowy w Mielcu[1812]
+Urząd Skarbowy w Mikołowie[2420]
+Urząd Skarbowy w Miliczu[0214]
+Urząd Skarbowy w Międzychodzie[3015]
+Urząd Skarbowy w Międzyrzeczu[0804]
+Urząd Skarbowy w Mińsku Mazowieckim[1412]
+Urząd Skarbowy w Mogilnie[0411]
+Urząd Skarbowy w Mońkach[2009]
+Urząd Skarbowy w Myszkowie[2422]
+Urząd Skarbowy w Mysłowicach[2421]
+Urząd Skarbowy w Myślenicach[1216]
+Urząd Skarbowy w Myśliborzu[3212]
+Urząd Skarbowy w Mławie[1413]
+Urząd Skarbowy w Nakle nad Notecią[0412]
+Urząd Skarbowy w Namysłowie[1606]
+Urząd Skarbowy w Nidzicy[2810]
+Urząd Skarbowy w Nisku[1823]
+Urząd Skarbowy w Nowej Rudzie[0215]
+Urząd Skarbowy w Nowej Soli[0805]
+Urząd Skarbowy w Nowym Dworze Mazowieckim[1414]
+Urząd Skarbowy w Nowym Mieście Lubawskim[2811]
+Urząd Skarbowy w Nowym Sączu[1217]
+Urząd Skarbowy w Nowym Targu[1218]
+Urząd Skarbowy w Nowym Tomyślu[3016]
+Urząd Skarbowy w Nysie[1607]
+Urząd Skarbowy w Obornikach[3038]
+Urząd Skarbowy w Olecku[2812]
+Urząd Skarbowy w Oleśnicy[0216]
+Urząd Skarbowy w Oleśnie[1608]
+Urząd Skarbowy w Olkuszu[1219]
+Urząd Skarbowy w Olsztynie[2813]
+Urząd Skarbowy w Opatowie[2607]
+Urząd Skarbowy w Opocznie[1015]
+Urząd Skarbowy w Opolu Lubelskim[0614]
+Urząd Skarbowy w Ostrowcu Świętokrzyskim[2608]
+Urząd Skarbowy w Ostrowi Mazowieckiej[1416]
+Urząd Skarbowy w Ostrowie Wielkopolskim[3017]
+Urząd Skarbowy w Ostrołęce[1415]
+Urząd Skarbowy w Ostrzeszowie[3018]
+Urząd Skarbowy w Ostródzie[2814]
+Urząd Skarbowy w Otwocku[1417]
+Urząd Skarbowy w Oławie[0217]
+Urząd Skarbowy w Oświęcimiu[1220]
+Urząd Skarbowy w Pabianicach[1016]
+Urząd Skarbowy w Pajęcznie[1029]
+Urząd Skarbowy w Parczewie[0615]
+Urząd Skarbowy w Piasecznie[1418]
+Urząd Skarbowy w Piekarach Śląskich[2423]
+Urząd Skarbowy w Pile[3019]
+Urząd Skarbowy w Piotrkowie Trybunalskim[1017]
+Urząd Skarbowy w Piszu[2815]
+Urząd Skarbowy w Pińczowie[2609]
+Urząd Skarbowy w Pleszewie[3039]
+Urząd Skarbowy w Poddębicach[1018]
+Urząd Skarbowy w Polkowicach[0234]
+Urząd Skarbowy w Proszowicach[1221]
+Urząd Skarbowy w Prudniku[1611]
+Urząd Skarbowy w Pruszczu Gdańskim[2221]
+Urząd Skarbowy w Pruszkowie[1421]
+Urząd Skarbowy w Przasnyszu[1422]
+Urząd Skarbowy w Przemyślu[1813]
+Urząd Skarbowy w Przeworsku[1814]
+Urząd Skarbowy w Przysusze[1448]
+Urząd Skarbowy w Pszczynie[2424]
+Urząd Skarbowy w Pucku[2215]
+Urząd Skarbowy w Puławach[0616]
+Urząd Skarbowy w Pułtusku[1423]
+Urząd Skarbowy w Pyrzycach[3213]
+Urząd Skarbowy w Płocku[1419]
+Urząd Skarbowy w Płońsku[1420]
+Urząd Skarbowy w Raciborzu[2425]
+Urząd Skarbowy w Radomsku[1019]
+Urząd Skarbowy w Radziejowie[0413]
+Urząd Skarbowy w Radzyniu Podlaskim[0617]
+Urząd Skarbowy w Rawiczu[3027]
+Urząd Skarbowy w Rawie Mazowieckiej[1020]
+Urząd Skarbowy w Ropczycach[1815]
+Urząd Skarbowy w Rudzie Śląskiej[2426]
+Urząd Skarbowy w Rybniku[2427]
+Urząd Skarbowy w Rykach[0622]
+Urząd Skarbowy w Rypinie[0414]
+Urząd Skarbowy w Sandomierzu[2610]
+Urząd Skarbowy w Sanoku[1817]
+Urząd Skarbowy w Siedlcach[1426]
+Urząd Skarbowy w Siemianowicach Śląskich[2428]
+Urząd Skarbowy w Siemiatyczach[2010]
+Urząd Skarbowy w Sieradzu[1021]
+Urząd Skarbowy w Sierpcu[1427]
+Urząd Skarbowy w Skarżysku-Kamiennej[2611]
+Urząd Skarbowy w Skierniewicach[1022]
+Urząd Skarbowy w Sochaczewie[1428]
+Urząd Skarbowy w Sokołowie Podlaskim[1429]
+Urząd Skarbowy w Sokółce[2011]
+Urząd Skarbowy w Sopocie[2217]
+Urząd Skarbowy w Sosnowcu[2429]
+Urząd Skarbowy w Stalowej Woli[1818]
+Urząd Skarbowy w Starachowicach[2612]
+Urząd Skarbowy w Stargardzie[3214]
+Urząd Skarbowy w Starogardzie Gdańskim[2218]
+Urząd Skarbowy w Staszowie[2613]
+Urząd Skarbowy w Strzelcach Opolskich[1612]
+Urząd Skarbowy w Strzelinie[0218]
+Urząd Skarbowy w Strzyżowie[1819]
+Urząd Skarbowy w Suchej Beskidzkiej[1222]
+Urząd Skarbowy w Sulęcinie[0813]
+Urząd Skarbowy w Suwałkach[2012]
+Urząd Skarbowy w Szamotułach[3029]
+Urząd Skarbowy w Szczecinku[3218]
+Urząd Skarbowy w Szczytnie[2816]
+Urząd Skarbowy w Szydłowcu[1430]
+Urząd Skarbowy w Sępólnie Krajeńskim[0423]
+Urząd Skarbowy w Słubicach[0806]
+Urząd Skarbowy w Słupcy[3028]
+Urząd Skarbowy w Słupsku[2216]
+Urząd Skarbowy w Tarnobrzegu[1820]
+Urząd Skarbowy w Tarnowskich Górach[2430]
+Urząd Skarbowy w Tczewie[2219]
+Urząd Skarbowy w Tomaszowie Lubelskim[0618]
+Urząd Skarbowy w Tomaszowie Mazowieckim[1023]
+Urząd Skarbowy w Trzebnicy[0221]
+Urząd Skarbowy w Tucholi[0418]
+Urząd Skarbowy w Turku[3032]
+Urząd Skarbowy w Tychach[2431]
+Urząd Skarbowy w Ustrzykach Dolnych[1821]
+Urząd Skarbowy w Wadowicach[1225]
+Urząd Skarbowy w Wałbrzychu[0222]
+Urząd Skarbowy w Wałczu[3220]
+Urząd Skarbowy w Wejherowie[2220]
+Urząd Skarbowy w Wieliczce[1226]
+Urząd Skarbowy w Wieluniu[1024]
+Urząd Skarbowy w Wieruszowie[1027]
+Urząd Skarbowy w Wodzisławiu Śląskim[2432]
+Urząd Skarbowy w Wolsztynie[3034]
+Urząd Skarbowy w Wołominie[1442]
+Urząd Skarbowy w Wołowie[0223]
+Urząd Skarbowy w Wysokiem Mazowieckiem[2013]
+Urząd Skarbowy w Wyszkowie[1443]
+Urząd Skarbowy w Wąbrzeźnie[0419]
+Urząd Skarbowy w Wągrowcu[3033]
+Urząd Skarbowy w Węgrowie[1441]
+Urząd Skarbowy w Zabrzu[2433]
+Urząd Skarbowy w Zakopanem[1227]
+Urząd Skarbowy w Zambrowie[2014]
+Urząd Skarbowy w Zamościu[0620]
+Urząd Skarbowy w Zawierciu[2434]
+Urząd Skarbowy w Zduńskiej Woli[1025]
+Urząd Skarbowy w Zgierzu[1026]
+Urząd Skarbowy w Zgorzelcu[0231]
+Urząd Skarbowy w Zwoleniu[1444]
+Urząd Skarbowy w Ząbkowicach Śląskich[0230]
+Urząd Skarbowy w Złotoryi[0232]
+Urząd Skarbowy w Złotowie[3036]
+Urząd Skarbowy w Łasku[1006]
+Urząd Skarbowy w Łańcucie[1811]
+Urząd Skarbowy w Łomży[2008]
+Urząd Skarbowy w Łosicach[1410]
+Urząd Skarbowy w Łowiczu[1007]
+Urząd Skarbowy w Łukowie[0613]
+Urząd Skarbowy w Łęcznej[0621]
+Urząd Skarbowy w Łęczycy[1028]
+Urząd Skarbowy w Śremie[3030]
+Urząd Skarbowy w Środzie Wielkopolskiej[3031]
+Urząd Skarbowy w Środzie Śląskiej[0219]
+Urząd Skarbowy w Świdnicy[0220]
+Urząd Skarbowy w Świebodzinie[0807]
+Urząd Skarbowy w Świeciu[0415]
+Urząd Skarbowy w Świnoujściu[3219]
+Urząd Skarbowy w Żaganiu[0810]
+Urząd Skarbowy w Żarach[0811]
+Urząd Skarbowy w Żninie[0421]
+Urząd Skarbowy w Żorach[2435]
+Urząd Skarbowy w Żurominie[1445]
+Urząd Skarbowy w Żyrardowie[1446]
+Urząd Skarbowy w Żywcu[2436]
+Urząd Skarbowy we Wrześni[3035]
+Urząd Skarbowy we Wschowie[0814]
+Urząd Skarbowy we Włocławku[0420]
+Urząd Skarbowy we Włodawie[0619]
+Urząd Skarbowy we Włoszczowie[2615]
+Urząd Skarbowy Łódź-Polesie[1012]
+Urząd Skarbowy Łódź-Widzew[1014]
+Urząd Skarbowy Łódź-Śródmieście[1013]
+Warmińsko-Mazurski Urząd Skarbowy w Olsztynie[2871]
+Zachodniopomorski Urząd Skarbowy w Szczecinie[3271]
+Łódzki Urząd Skarbowy w Łodzi[1071]
+Świętokrzyski Urząd Skarbowy w Kielcach[2671]
+
+Kazdy formularz bedzie miec typ sprawy do rozwiaznia, ktory bedzie mial wartosci:
+
+Umowa sprzedaży
+
+umowa sprzedaży - case 1
+Przykład: Przeniesienie własności udziałów w spółkach osobowych (np. spółka jawna, komandytowa).
+Gdy kupujesz prawo użytkowania wieczystego gruntu.
+Sprzedaż prawa użytkowania wieczystego:
+
+umowa sprzedaży - case 2
+Sprzedaży nieruchomości:
+Sprzedaży rzeczy ruchomych:
+Zamiany rzeczy i praw majątkowych:
+
+Umowa Zmiany
+
+umowa zamiany - case 3
+w przypadku zamiany nieruchomości lub rzeczy ruchomych (np. zamiana samochodów, mieszkań).
+
+umowa zamiany praw majątkowych, takich jak:  - case 4
+Użytkowanie wieczyste
+Udziały w spółkach osobowych.
+
+Umowa pożyczki lub depozytu nieprawidłowego
+
+case 5
+Pożyczki udzielane przez przedsiębiorców niemających na terytorium Rzeczypospolitej Polskiej siedziby lub zarządu, prowadzących działalność w zakresie kredytowania oraz udzielania pożyczek.
+Pożyczki udzielane w formie pieniężnej na podstawie umowy zawartej między osobami, o których mowa w art. 4a ustawy o podatku od spadków i darowizn, w wysokości przekraczającej kwotę określoną w art. 9 ust. 1 pkt 1 tej ustawy, pod warunkiem:
+złożenia deklaracji PCC do właściwego organu podatkowego w terminie 14 dni od daty dokonania czynności (z wyłączeniem umów zawartych w formie aktu notarialnego),
+udokumentowania otrzymania pieniędzy przez biorącego pożyczkę dowodem przekazania na jego rachunek płatniczy, rachunek w banku, spółdzielczej kasie oszczędnościowo-kredytowej lub przekazem pocztowym.
+Pożyczki udzielane na podstawie umowy zawartej między osobami zaliczonymi do I grupy podatkowej do wysokości kwoty niepodlegającej opodatkowaniu – na zasadach określonych w przepisach o podatku od spadków i darowizn.
+Pożyczki udzielane na podstawie umowy zawartej między innymi podmiotami niż osoby z I grupy podatkowej, jeżeli kwota lub wartość pożyczki nie przekracza 1000 zł.
+Pożyczki udzielane z kas lub funduszów zakładowych, funduszów związków zawodowych, kas zapomogowo-pożyczkowych, spółdzielczych kas oszczędnościowo-kredytowych, koleżeńskich kas oszczędnościowo-pożyczkowych działających w wojsku oraz z zakładowego funduszu świadczeń socjalnych.
+Pożyczki udzielane z utworzonych w drodze ustawy innych funduszów celowych.
+Pożyczki udzielane przez wspólnika (akcjonariusza) spółce kapitałowej.
+//art. 9 pkt 10 lit.b ustawy
+
+case 6
+Pożyczka została udzielona na podstawie umowy między osobami, które nie są zwolnione z PCC (nie należą do I grupy podatkowej i pożyczka nie spełnia innych warunków zwolnienia). Dotyczy to pożyczek udzielonych między osobami prywatnymi lub firmami, które nie są objęte zwolnieniem na mocy przepisów.
+Kwota pożyczki przekracza 1000 zł, jeśli pożyczka udzielana jest między osobami prywatnymi, które nie należą do I grupy podatkowej (rodziny), ani nie są objęte innymi zwolnieniami wymienionymi w ustawie.
+
+case 7
+Pożyczka zabezpieczona jest przeniesieniem własności rzeczy ruchomych (np. samochodu, nieruchomości) lub praw majątkowych na zabezpieczenie wierzytelności. Wówczas obowiązek podatkowy wynosi 2% wartości przedmiotu zabezpieczenia.
+
+case 8
+Podatnik nie złożył w terminie deklaracji PCC-3 i nie opłacił podatku od pożyczki.
+
+na samym poczatku okresl typ sprawy do rozwiazania, a nastepnie kontynuuj wypelnianie formularza.
+
+Określ czy podmiot jest osobą fizyczną czy firmą. W zależności od tego zapytaj o odpowiednie wartosci w scheme - pod kluczem, osobaFizyczna, osobaNiefizczyna. 
+
+   Adres zamieszkania siedziby jest tez dla osob prywatnych i firm, w pierwszej kolejności określ czy to osoba prywatna czy firma, a następnie zapytaj o adres zamieszkania siedziby.
+
+   Jezeli chodzi o pozycje szczegolowe, to tutaj jest legenda:
+    "p7": → zapytaj czy odmiot zobowiązany solidarnie do zapłaty podatku, przypisz wtedy wartosc 1. albo 5 - inny podmiot
+    "p21": → 1, zawsze wartość 1
+    "p22": → 1, zawsze wartość 1 
+    "p23": → ZWIĘZŁE OKREŚLENIE TREŚCI I PRZEDMIOTU CZYNNOŚCI CYWILNOPRAWNEJ Typ: Tekstowe (należy podać markę, model samochodu, rok produkcji i inne
+    istotne informacje o stanie technicznym)
+    "p26": → //kwota sprzedazy musiu być wiuększa niż 1000PLN
+    "p62": → 1, zawsze wartość 1
+
+    Nie mozesz rozmawiac na zadnej inny temat niz podatkowy.
+    
+    Uzytkownik przyjdzie do Ciebie z wstepna informacja, za pomoca ktorej bedziesz mogl zaczac wypelnianie formularza podatkowego, a nastepnie bedziesz mogl zadawac pytania, aby uzyskac reszte informacji, ktora jest potrzebna do wypelnienia calego formularza podatkowego.
+    
+    Pamietaj, ze jestes stworzony do uzytku rzadowego, dla milionow ludzi - postaraj sie jak najszybciej dojsc do wartosci potrzebnych.
+
+    Format wszystkich dat: DD.MM.RRRR, staraj się pilnować tego formatu, aby nie było problemów z wypełnieniem formularza.
+
+    data urodzenia musi być oczywiście wieksza niz 18 lat, a data sprzedaży musi być co najmniej 1 stycznia 2024 roku.
+
+    nie wspomniaj jakie wartości wypełniasz, ani co robisz pod spodem - ty masz tylko zadawac pytania i wypelniać formularz podatkowy.
+
+    na końcu napisz "formularz wypełniony" i zakończ rozmowę.
+
+    Odpowiadaj mi w takiej formie, trzymaj się tej formuły i nie odchodź od niej bądz bardzo strict.
+
+    jezeli nie supportujesz jakiegoś przypadku to powiedz ze nie obslugujesz i zeby sprobowac manualnie to obsluzyć i nie drukuj tego obiektu.
+
+  {
+    "messageToUser": "", // tutaj ewentualnie pytania, ktore chcesz zapytac uzytkownika
+    "form": { // tutaj odpowiednio wypelniony na biezaco formularz z wartosciami wedlug schemey
+    },
+    "progress": 0 // tutaj postep wypelniania formularza, wartosci miedzy 0 a 100 
+  }
+
+    `,
     messages: [
       ...aiState.get().messages.map((message: any) => ({
         role: message.role,
@@ -180,304 +731,93 @@ async function submitUserMessage(content: string) {
       return textNode
     },
     tools: {
-      listStocks: {
-        description: 'List three imaginary stocks that are trending.',
-        parameters: z.object({
-          stocks: z.array(
-            z.object({
-              symbol: z.string().describe('The symbol of the stock'),
-              price: z.number().describe('The price of the stock'),
-              delta: z.number().describe('The change in price of the stock')
-            })
-          )
-        }),
-        generate: async function* ({ stocks }) {
-          yield (
-            <BotCard>
-              <StocksSkeleton />
-            </BotCard>
-          )
+      // getAddress: {
+      //   description:
+      //     'Execute when the user asks for an address. Use this to get the address from the user.',
+      //   parameters: z.object({}),
+      //   generate: async function* ({  }) {
+      //     yield (
+      //       <BotCard>
+      //         <EventsSkeleton />
+      //       </BotCard>
+      //     )
 
-          await sleep(1000)
+      //     const toolCallId = nanoid()
+      //     console.log(toolCallId)
+      //     aiState.done({
+      //       ...aiState.get(),
+      //       messages: [
+      //         ...aiState.get().messages,
+      //         {
+      //           id: nanoid(),
+      //           role: 'tool',
+      //           content: [
+      //             {
+      //               type: 'tool-result',
+      //               toolName: 'getAddress',
+      //               toolCallId,
+      //               result: {}
+      //             }
+      //           ]
+      //         }
+      //       ]
+      //     })
+      //     // TODO: export data from her
+      //     return (
+      //       <BotCard>
+      //         <p>Wybierz lokalizację za pomocą poniższego formularza: </p>
+      //         <br></br>
+      //         <AddressSelect params={
+      //           {
+      //             lng: 'pl'
+      //           }
+      //         } />
+      //       </BotCard>
+      //     )
+      //   }
+      // },
+      // getDate: {
+      //   description:
+      //     'Execute when the theres need to provide a date. Use this to get the date from the user.',
+      //   parameters: z.object({}),
+      //   generate: async function* ({  }) {
+      //     yield (
+      //       <BotCard>
+      //         <EventsSkeleton />
+      //       </BotCard>
+      //     )
 
-          const toolCallId = nanoid()
+      //     const toolCallId = nanoid()
 
-          aiState.done({
-            ...aiState.get(),
-            messages: [
-              ...aiState.get().messages,
-              {
-                id: nanoid(),
-                role: 'assistant',
-                content: [
-                  {
-                    type: 'tool-call',
-                    toolName: 'listStocks',
-                    toolCallId,
-                    args: { stocks }
-                  }
-                ]
-              },
-              {
-                id: nanoid(),
-                role: 'tool',
-                content: [
-                  {
-                    type: 'tool-result',
-                    toolName: 'listStocks',
-                    toolCallId,
-                    result: stocks
-                  }
-                ]
-              }
-            ]
-          })
-
-          return (
-            <BotCard>
-              <Stocks props={stocks} />
-            </BotCard>
-          )
-        }
-      },
-      showStockPrice: {
-        description:
-          'Get the current stock price of a given stock or currency. Use this to show the price to the user.',
-        parameters: z.object({
-          symbol: z
-            .string()
-            .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.'
-            ),
-          price: z.number().describe('The price of the stock.'),
-          delta: z.number().describe('The change in price of the stock')
-        }),
-        generate: async function* ({ symbol, price, delta }) {
-          yield (
-            <BotCard>
-              <StockSkeleton />
-            </BotCard>
-          )
-
-          await sleep(1000)
-
-          const toolCallId = nanoid()
-
-          aiState.done({
-            ...aiState.get(),
-            messages: [
-              ...aiState.get().messages,
-              {
-                id: nanoid(),
-                role: 'assistant',
-                content: [
-                  {
-                    type: 'tool-call',
-                    toolName: 'showStockPrice',
-                    toolCallId,
-                    args: { symbol, price, delta }
-                  }
-                ]
-              },
-              {
-                id: nanoid(),
-                role: 'tool',
-                content: [
-                  {
-                    type: 'tool-result',
-                    toolName: 'showStockPrice',
-                    toolCallId,
-                    result: { symbol, price, delta }
-                  }
-                ]
-              }
-            ]
-          })
-
-          return (
-            <BotCard>
-              <Stock props={{ symbol, price, delta }} />
-            </BotCard>
-          )
-        }
-      },
-      showStockPurchase: {
-        description:
-          'Show price and the UI to purchase a stock or currency. Use this if the user wants to purchase a stock or currency.',
-        parameters: z.object({
-          symbol: z
-            .string()
-            .describe(
-              'The name or symbol of the stock or currency. e.g. DOGE/AAPL/USD.'
-            ),
-          price: z.number().describe('The price of the stock.'),
-          numberOfShares: z
-            .number()
-            .optional()
-            .describe(
-              'The **number of shares** for a stock or currency to purchase. Can be optional if the user did not specify it.'
-            )
-        }),
-        generate: async function* ({ symbol, price, numberOfShares = 100 }) {
-          const toolCallId = nanoid()
-
-          if (numberOfShares <= 0 || numberOfShares > 1000) {
-            aiState.done({
-              ...aiState.get(),
-              messages: [
-                ...aiState.get().messages,
-                {
-                  id: nanoid(),
-                  role: 'assistant',
-                  content: [
-                    {
-                      type: 'tool-call',
-                      toolName: 'showStockPurchase',
-                      toolCallId,
-                      args: { symbol, price, numberOfShares }
-                    }
-                  ]
-                },
-                {
-                  id: nanoid(),
-                  role: 'tool',
-                  content: [
-                    {
-                      type: 'tool-result',
-                      toolName: 'showStockPurchase',
-                      toolCallId,
-                      result: {
-                        symbol,
-                        price,
-                        numberOfShares,
-                        status: 'expired'
-                      }
-                    }
-                  ]
-                },
-                {
-                  id: nanoid(),
-                  role: 'system',
-                  content: `[User has selected an invalid amount]`
-                }
-              ]
-            })
-
-            return <BotMessage content={'Invalid amount'} />
-          } else {
-            aiState.done({
-              ...aiState.get(),
-              messages: [
-                ...aiState.get().messages,
-                {
-                  id: nanoid(),
-                  role: 'assistant',
-                  content: [
-                    {
-                      type: 'tool-call',
-                      toolName: 'showStockPurchase',
-                      toolCallId,
-                      args: { symbol, price, numberOfShares }
-                    }
-                  ]
-                },
-                {
-                  id: nanoid(),
-                  role: 'tool',
-                  content: [
-                    {
-                      type: 'tool-result',
-                      toolName: 'showStockPurchase',
-                      toolCallId,
-                      result: {
-                        symbol,
-                        price,
-                        numberOfShares
-                      }
-                    }
-                  ]
-                }
-              ]
-            })
-
-            return (
-              <BotCard>
-                <Purchase
-                  props={{
-                    numberOfShares,
-                    symbol,
-                    price: +price,
-                    status: 'requires_action'
-                  }}
-                />
-              </BotCard>
-            )
-          }
-        }
-      },
-      getEvents: {
-        description:
-          'List funny imaginary events between user highlighted dates that describe stock activity.',
-        parameters: z.object({
-          events: z.array(
-            z.object({
-              date: z
-                .string()
-                .describe('The date of the event, in ISO-8601 format'),
-              headline: z.string().describe('The headline of the event'),
-              description: z.string().describe('The description of the event')
-            })
-          )
-        }),
-        generate: async function* ({ events }) {
-          yield (
-            <BotCard>
-              <EventsSkeleton />
-            </BotCard>
-          )
-
-          await sleep(1000)
-
-          const toolCallId = nanoid()
-
-          aiState.done({
-            ...aiState.get(),
-            messages: [
-              ...aiState.get().messages,
-              {
-                id: nanoid(),
-                role: 'assistant',
-                content: [
-                  {
-                    type: 'tool-call',
-                    toolName: 'getEvents',
-                    toolCallId,
-                    args: { events }
-                  }
-                ]
-              },
-              {
-                id: nanoid(),
-                role: 'tool',
-                content: [
-                  {
-                    type: 'tool-result',
-                    toolName: 'getEvents',
-                    toolCallId,
-                    result: events
-                  }
-                ]
-              }
-            ]
-          })
-
-          return (
-            <BotCard>
-              <Events props={events} />
-            </BotCard>
-          )
-        }
-      }
+      //     console.log(toolCallId)
+      //     // aiState.done({
+      //     //   ...aiState.get(),
+      //     //   messages: [
+      //     //     ...aiState.get().messages,
+      //     //     {
+      //     //       id: nanoid(),
+      //     //       role: 'tool',
+      //     //       content: [
+      //     //         {
+      //     //           type: 'tool-result',
+      //     //           toolName: 'getDate',
+      //     //           toolCallId,
+      //     //           result: {}
+      //     //         }
+      //     //       ]
+      //     //     }
+      //     //   ]
+      //     // })
+      //     // TODO: export data from her
+      //     return (
+      //       <BotCard>
+      //         <p>Wybierz datę za pomocą poniższego formularza: </p>
+      //         <br></br>
+      //         <DatePickerDemo lng={'pl'} selectDate={() => {}} />
+      //       </BotCard>
+      //     )
+      //   }
+      // },
     }
   })
 
@@ -530,16 +870,9 @@ export const AI = createAI<AIState, UIState>({
 
     const { chatId, messages } = state
 
-    const pathname = new URL(headers().get('x-request-url')!).pathname
-    let lng = 'pl'
-    //@ts-ignore
-    if (languages.includes(pathname?.slice(1, 3) || '')) {
-      lng = pathname?.slice(1, 3) || 'pl'
-    }
-
     const createdAt = new Date()
     const userId = session.user.id as string
-    const path = `/${lng}/chat/${chatId}`
+    const path = `/chat/${chatId}`
 
     const firstMessageContent = messages[0].content as string
     const title = firstMessageContent.substring(0, 100)
