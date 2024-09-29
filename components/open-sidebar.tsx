@@ -10,7 +10,7 @@ const OpenSidebar = () => {
   return (
     <div
       className={
-        'hidden lg:block dark:bg-black bg-white h-screen pt-5 px-7 border-r'
+        'hidden xl:block dark:bg-black bg-white h-screen pt-5 px-7 border-r'
       }
     >
       <DoubleArrowLeftIcon

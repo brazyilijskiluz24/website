@@ -8,6 +8,7 @@ import { useTranslation } from '@/app/i18n'
 import { Params } from '@/app/[lng]/layout'
 import { fallbackLng, languages } from '@/app/i18n/settings'
 import OpenSidebar from '@/components/open-sidebar'
+import DocPreview from '@/components/doc-preview'
 
 export async function generateMetadata({ params: { lng } }: Params) {
   if (languages.indexOf(lng) < 0) lng = fallbackLng
@@ -33,8 +34,7 @@ export default async function IndexPage({ params }: Params) {
           lng={params.lng}
         />
       </AI>
+      <DocPreview lng={params.lng} />
     </>
   )
 }
-
-import { Params } from '@/app/layout'

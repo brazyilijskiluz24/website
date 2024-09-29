@@ -63,10 +63,14 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
 
   return (
     <div
-      className="group w-full mt-20 lg:mt-0 overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
+      className="group w-full pt-20 h-screen relative xl:h-screen xl:pt-0 overflow-auto pl-0 peer-[[data-state=open]]:xl:pl-[250px]"
       ref={scrollRef}
     >
-      <div className={'h-screen relative mx-auto sm:max-w-2xl sm:px-4'}>
+      <div
+        className={
+          'h-full flex flex-col justify-around pb-52 relative mx-auto sm:max-w-2xl sm:px-4'
+        }
+      >
         <div
           className={cn('pb-[128px] pt-4 md:pt-10', className)}
           ref={messagesRef}

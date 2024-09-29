@@ -22,7 +22,8 @@ export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
       <div className="flex items-center justify-between p-4">
         <h4 className="text-sm font-medium mt-4">Historia konwersacji</h4>
       </div>
-      <div className="mb-2 px-2">
+      {userId && (
+       <div className="mb-2 px-2">
         <Link
           href={`/${lng}/`}
           className={cn(
@@ -34,6 +35,7 @@ export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
           Nowy Chat
         </Link>
       </div>
+      )}
       <React.Suspense
         fallback={
           <div className="flex flex-col flex-1 px-4 space-y-4 overflow-auto">

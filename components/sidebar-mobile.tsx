@@ -21,7 +21,7 @@ export function SidebarMobile({ children }: SidebarMobileProps) {
       <SheetTrigger asChild>
         <Button
           variant="ghost"
-          className="-ml-2 flex absolute size-9 p-0 lg:hidden"
+          className="-ml-2 flex absolute size-9 p-0 xl:hidden"
         >
           <DoubleArrowRightIcon className={'text-red'} width={24} height={24} />
         </Button>
