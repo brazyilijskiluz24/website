@@ -3,9 +3,7 @@ import { GeistMono } from 'geist/font/mono'
 
 import '@/app/globals.css'
 import { cn } from '@/lib/utils'
-import { TailwindIndicator } from '@/components/tailwind-indicator'
 import { Providers } from '@/components/providers'
-import { Header } from '@/components/header'
 import { Toaster } from '@/components/ui/sonner'
 import { fallbackLng, languages, TLanguage } from '@/app/i18n/settings'
 import { useTranslation } from '@/app/i18n'
@@ -43,9 +41,11 @@ export async function generateMetadata({ params: { lng } }: Params) {
     description:
       '"e-podatek" - inteligentny asystent rządowy. Szybka i kompetentna pomoc w sprawach podatkowych, dostępna całodobowo.',
     icons: {
-      icon: '/favicon.ico',
-      shortcut: '/favicon-16x16.png',
-      apple: '/apple-touch-icon.png'
+      icon: {
+        url: '/emblem.svg'
+      },
+      shortcut: '/emblem.svg',
+      apple: '/emblem.svg'
     }
   }
 }

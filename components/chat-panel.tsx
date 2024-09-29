@@ -13,6 +13,8 @@ import { UserMessage } from '@/components/stocks/message'
 import ChatCard from '@/components/chat-card'
 import { auth } from '@/auth'
 import { undefined } from 'zod'
+import PersonalData from '@/components/personal-data'
+
 
 export interface ChatPanelProps {
   id?: string
