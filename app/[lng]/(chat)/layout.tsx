@@ -27,7 +27,7 @@ export default async function ChatLayout({
   params: { lng }
 }: ChatLayoutProps) {
   return (
-    <div className="relative flex h-screen  overflow-hidden">
+    <div className="relative flex h-screen overflow-hidden">
       <SidebarDesktop params={{ lng }} />
       <MobileHeader params={{ lng }} />
       {children}

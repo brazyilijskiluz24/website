@@ -36,3 +36,5 @@ export default async function IndexPage({ params }: Params) {
     </>
   )
 }
+
+import { Params } from '@/app/layout'

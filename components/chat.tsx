@@ -66,9 +66,9 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
       className="group w-full mt-20 lg:mt-0 overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
       ref={scrollRef}
     >
-      <div className={'mx-auto sm:max-w-2xl sm:px-4'}>
+      <div className={'h-screen relative mx-auto sm:max-w-2xl sm:px-4'}>
         <div
-          className={cn('pb-[200px] pt-4 md:pt-10', className)}
+          className={cn('pb-[128px] pt-4 md:pt-10', className)}
           ref={messagesRef}
         >
           {messages.length ? (
