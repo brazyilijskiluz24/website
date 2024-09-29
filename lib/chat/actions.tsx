@@ -220,7 +220,7 @@ async function submitUserMessage(content: string) {
 TODO:
   - if there are values from the user already presneted in the profile, let's change the system message
   - przekazac typ formularza podatkowego
-  - 
+  -
 
 */
 
@@ -850,9 +850,9 @@ Określ czy podmiot jest osobą fizyczną czy firmą. W zależności od tego zap
             const statusCode = response.status
             console.log('Status code:', statusCode)
 
-            // If you need the response data as well
+            // If you need the response data.ts as well
             const data = await response.text()
-            console.log('Response data:', data)
+            console.log('Response data.ts:', data)
 
             return (
               <>
