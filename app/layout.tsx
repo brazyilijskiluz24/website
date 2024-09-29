@@ -84,7 +84,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           {children}
-          <TailwindIndicator />
         </Providers>
       </body>
     </html>
