@@ -17,13 +17,16 @@ import {
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
+import { TLanguage } from '@/app/i18n/settings'
 
 export function PromptForm({
   input,
-  setInput
+  setInput,
+  lng
 }: {
   input: string
   setInput: (value: string) => void
+  lng: TLanguage
 }) {
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
@@ -74,7 +77,7 @@ export function PromptForm({
               size="icon"
               className="absolute left-0 top-[14px] size-8 rounded-full bg-background p-0 sm:left-4"
               onClick={() => {
-                router.push('/new')
+                router.push('/' + lng + '/new')
               }}
             >
               <IconPlus />
