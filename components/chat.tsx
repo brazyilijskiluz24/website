@@ -63,7 +63,7 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
 
   return (
     <div
-      className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
+      className="group w-full mt-20 lg:mt-0 overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
       ref={scrollRef}
     >
       <div className={'mx-auto sm:max-w-2xl sm:px-4'}>
