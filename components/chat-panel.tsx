@@ -11,10 +11,7 @@ import type { AI } from '@/lib/chat/actions'
 import { nanoid } from '@/lib/utils'
 import { UserMessage } from '@/components/stocks/message'
 import ChatCard from '@/components/chat-card'
-import { auth } from '@/auth'
-import { undefined } from 'zod'
-import PersonalData from '@/components/personal-data'
-
+import { TLanguage } from '@/app/i18n/settings'
 
 export interface ChatPanelProps {
   id?: string
@@ -23,6 +20,7 @@ export interface ChatPanelProps {
   setInput: (value: string) => void
   isAtBottom: boolean
   scrollToBottom: () => void
+  lng: TLanguage
 }
 
 export function ChatPanel({
@@ -31,7 +29,8 @@ export function ChatPanel({
   input,
   setInput,
   isAtBottom,
-  scrollToBottom
+  scrollToBottom,
+  lng
 }: ChatPanelProps) {
   const [aiState] = useAIState()
   const [messages, setMessages] = useUIState<typeof AI>()
@@ -136,7 +135,7 @@ export function ChatPanel({
         ) : null}
 
         <div className="space-y-4 border-t bg-background px-4 py-2 shadow-lg sm:rounded-t-xl sm:border md:py-4">
-          <PromptForm input={input} setInput={setInput} />
+          <PromptForm input={input} setInput={setInput} lng={lng} />
         </div>
       </div>
     </div>

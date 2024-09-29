@@ -14,7 +14,7 @@ const getAddresses = async (
     `https://nominatim.openstreetmap.org/search?q=${inputValue}&format=json`
   )
   const res = await req.json()
-  console.log('res:', res)
+
   if (Array.isArray(res)) {
     return res.map(v => ({
       label: v.display_name,

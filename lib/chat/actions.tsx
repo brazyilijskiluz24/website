@@ -35,6 +35,9 @@ import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat, Message } from '@/lib/types'
 import { auth } from '@/auth'
+import { headers } from 'next/headers'
+import { fallbackLng, languages } from '@/app/i18n/settings'
+import { redirect } from 'next/navigation'
 
 async function confirmPurchase(symbol: string, price: number, amount: number) {
   'use server'
@@ -527,9 +530,16 @@ export const AI = createAI<AIState, UIState>({
 
     const { chatId, messages } = state
 
+    const pathname = new URL(headers().get('x-request-url')!).pathname
+    let lng = 'pl'
+    //@ts-ignore
+    if (languages.includes(pathname?.slice(1, 3) || '')) {
+      lng = pathname?.slice(1, 3) || 'pl'
+    }
+
     const createdAt = new Date()
     const userId = session.user.id as string
-    const path = `/chat/${chatId}`
+    const path = `/${lng}/chat/${chatId}`
 
     const firstMessageContent = messages[0].content as string
     const title = firstMessageContent.substring(0, 100)

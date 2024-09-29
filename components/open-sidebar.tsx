@@ -8,7 +8,11 @@ const OpenSidebar = () => {
   const { toggleSidebar } = useSidebar()
 
   return (
-    <div className={'hidden lg:block bg-white h-screen pt-5 px-7 border-r'}>
+    <div
+      className={
+        'hidden lg:block dark:bg-black bg-white h-screen pt-5 px-7 border-r'
+      }
+    >
       <DoubleArrowLeftIcon
         onClick={toggleSidebar}
         className={'text-red rotate-180 cursor-pointer'}
