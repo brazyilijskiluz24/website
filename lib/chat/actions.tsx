@@ -690,6 +690,8 @@ Określ czy podmiot jest osobą fizyczną czy firmą. W zależności od tego zap
 
     jezeli nie supportujesz jakiegoś przypadku to powiedz ze nie obslugujesz i zeby sprobowac manualnie to obsluzyć i nie drukuj tego obiektu.
 
+    upewnij się prosze, ze masz wsyzstkie wartosci potrzebne - cala logika nie zadziala jak nie bedzie jednej z wartosci.
+
   {
     "messageToUser": "", // tutaj ewentualnie pytania, ktore chcesz zapytac uzytkownika
     "form": { // tutaj odpowiednio wypelniony na biezaco formularz z wartosciami wedlug schemey
