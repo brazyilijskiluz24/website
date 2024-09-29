@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { MemoizedReactMarkdown } from '@/components/markdown'
 import { IconOpenAI, IconUser } from '@/components/ui/icons'
 import { ChatMessageActions } from '@/components/chat-message-actions'
+import * as React from 'react'
 
 export interface ChatMessageProps {
   message: Message
@@ -28,7 +29,15 @@ export function ChatMessage({ message, ...props }: ChatMessageProps) {
             : 'bg-primary text-primary-foreground'
         )}
       >
-        {message.role === 'user' ? <IconUser /> : <IconOpenAI />}
+        {message.role === 'user' ? (
+          <IconUser />
+        ) : (
+          <image
+            src={`/images/company.png`}
+            alt={'asystenka'}
+            className="w-auto h-16 mb-2 object-contain"
+          />
+        )}
       </div>
       <div className="flex-1 px-1 ml-4 space-y-2 overflow-hidden">
         <MemoizedReactMarkdown

@@ -41,9 +41,11 @@ export async function generateMetadata({ params: { lng } }: Params) {
     description:
       '"e-podatek" - inteligentny asystent rządowy. Szybka i kompetentna pomoc w sprawach podatkowych, dostępna całodobowo.',
     icons: {
-      icon: '/favicon.ico',
-      shortcut: '/favicon-16x16.png',
-      apple: '/apple-touch-icon.png'
+      icon: {
+        url: '/emblem.svg'
+      },
+      shortcut: '/emblem.svg',
+      apple: '/emblem.svg'
     }
   }
 }

@@ -18,14 +18,15 @@ import {
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog'
 import { IconSpinner } from '@/components/ui/icons'
+import { clearChats } from '@/app/actions'
+import { TLanguage } from '@/app/i18n/settings'
 
 interface ClearHistoryProps {
   isEnabled: boolean
+  lng: TLanguage
 }
 
-export function ClearHistory({
-  isEnabled = false,
-}: ClearHistoryProps) {
+export function ClearHistory({ isEnabled = false, lng }: ClearHistoryProps) {
   const [open, setOpen] = React.useState(false)
   const [isPending, startTransition] = React.useTransition()
   const router = useRouter()
@@ -35,27 +36,24 @@ export function ClearHistory({
       <AlertDialogTrigger asChild>
         <Button variant="ghost" disabled={!isEnabled || isPending}>
           {isPending && <IconSpinner className="mr-2" />}
-          Clear history
+          Wyczyść historię
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>Czy jesteś pewien?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently delete your chat history and remove your data
-            from our servers.
+            To pernamentie usunie podgląd z naszych serwerów.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+          <AlertDialogCancel disabled={isPending}>Anuluj</AlertDialogCancel>
           <AlertDialogAction
             disabled={isPending}
             onClick={event => {
               event.preventDefault()
               startTransition(async () => {
-                // FIXME clearChats() is not defined
-                // @ts-ignore
-                const result = await clearChats()
+                const result = await clearChats(lng)
                 if (result && 'error' in result) {
                   toast.error(result.error)
                   return
@@ -66,7 +64,7 @@ export function ClearHistory({
             }}
           >
             {isPending && <IconSpinner className="mr-2 animate-spin" />}
-            Delete
+            Usuń
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

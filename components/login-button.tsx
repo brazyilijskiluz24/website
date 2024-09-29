@@ -6,37 +6,25 @@ import { signIn } from 'next-auth/react'
 import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { IconGitHub, IconSpinner } from '@/components/ui/icons'
+import { TLanguage } from '@/app/i18n/settings'
+import { useRouter } from 'next/navigation'
 
 interface LoginButtonProps extends ButtonProps {
-  showGithubIcon?: boolean
-  text?: string
+  lng: TLanguage
 }
 
-export function LoginButton({
-  text = 'Login with GitHub',
-  showGithubIcon = true,
-  className,
-  ...props
-}: LoginButtonProps) {
-  const [isLoading, setIsLoading] = React.useState(false)
+export function LoginButton({ className, ...props }: LoginButtonProps) {
+  const router = useRouter()
   return (
     <Button
       variant="outline"
+      size="icon"
       onClick={() => {
-        setIsLoading(true)
-        // next-auth signIn() function doesn't work yet at Edge Runtime due to usage of BroadcastChannel
-        signIn('github', { callbackUrl: `/` })
+        router.push(`/${props.lng}/login`)
       }}
-      disabled={isLoading}
-      className={cn(className)}
-      {...props}
+      className={'w-full justify-start pl-5'}
     >
-      {isLoading ? (
-        <IconSpinner className="mr-2 animate-spin" />
-      ) : showGithubIcon ? (
-        <IconGitHub className="mr-2" />
-      ) : null}
-      {text}
+      <span>Log in</span>
     </Button>
   )
 }

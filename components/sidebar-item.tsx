@@ -32,7 +32,7 @@ export function SidebarItem({ index, chat, children, lng }: SidebarItemProps) {
   const isActive = pathname === chat.path
   const [newChatId, setNewChatId] = useLocalStorage('newChatId', null)
   const shouldAnimate = index === 0 && isActive && newChatId
-  console.log(chat.path, 'path')
+
   if (!chat?.id) return null
 
   return (
@@ -71,7 +71,7 @@ export function SidebarItem({ index, chat, children, lng }: SidebarItemProps) {
         )}
       </div>
       <Link
-        href={'/' + lng + chat.path}
+        href={chat.path}
         className={cn(
           buttonVariants({ variant: 'ghost' }),
           'group w-full px-8 transition-colors hover:bg-zinc-200/40 dark:hover:bg-zinc-300/10',

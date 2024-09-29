@@ -36,7 +36,7 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
   useEffect(() => {
     if (session?.user) {
       if (!path.includes('chat') && messages.length === 1) {
-        window.history.replaceState({}, '', `/chat/${id}`)
+        window.history.replaceState({}, '', `/${lng}/chat/${id}`)
       }
     }
   }, [id, path, session?.user, messages])
@@ -63,7 +63,7 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
 
   return (
     <div
-      className="group w-full overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
+      className="group w-full mt-20 lg:mt-0 overflow-auto pl-0 peer-[[data-state=open]]:lg:pl-[250px] peer-[[data-state=open]]:xl:pl-[300px]"
       ref={scrollRef}
     >
       <div className={'h-screen relative mx-auto sm:max-w-2xl sm:px-4'}>
@@ -92,6 +92,7 @@ export function Chat({ id, className, session, missingKeys, lng }: ChatProps) {
           setInput={setInput}
           isAtBottom={isAtBottom}
           scrollToBottom={scrollToBottom}
+          lng={lng}
         />
       </div>
     </div>

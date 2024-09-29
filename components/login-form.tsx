@@ -96,7 +96,7 @@ function LoginButton({ params }: Params) {
 
   return (
     <button
-      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-red-600 p-2 text-sm font-semibold text-zinc-100 hover:bg-red-700 dark:bg-red-700 dark:text-zinc-50 dark:hover:bg-red-800"
+      className="my-4 flex h-10 w-full flex-row items-center justify-center rounded-md bg-red p-2 text-sm font-semibold text-zinc-100 hover:bg-rose-800 dark:bg-red-700 dark:text-zinc-50 dark:hover:bg-red-800"
       aria-disabled={pending}
     >
       {pending ? <IconSpinner /> : t('signIn')}

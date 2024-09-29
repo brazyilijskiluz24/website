@@ -11,6 +11,7 @@ import type { AI } from '@/lib/chat/actions'
 import { nanoid } from '@/lib/utils'
 import { UserMessage } from '@/components/stocks/message'
 import ChatCard from '@/components/chat-card'
+import { TLanguage } from '@/app/i18n/settings'
 
 export interface ChatPanelProps {
   id?: string
@@ -19,6 +20,7 @@ export interface ChatPanelProps {
   setInput: (value: string) => void
   isAtBottom: boolean
   scrollToBottom: () => void
+  lng: TLanguage
 }
 
 export function ChatPanel({
@@ -27,7 +29,8 @@ export function ChatPanel({
   input,
   setInput,
   isAtBottom,
-  scrollToBottom
+  scrollToBottom,
+  lng
 }: ChatPanelProps) {
   const [aiState] = useAIState()
   const [messages, setMessages] = useUIState<typeof AI>()
@@ -38,23 +41,13 @@ export function ChatPanel({
     {
       heading: 'Zakup samochodu',
       image: 'car-purchase.svg',
-      type: 'car'
+      type: 'Typ sprawy: zakup samochodu'
     },
     {
       heading: 'Otrzymałem pożyczkę',
       image: 'loan.svg',
-      type: 'loan'
+      type: 'Typ sprawy: otrzymanie pozyczki'
     },
-    {
-      heading: 'Wyrok sądu lub ugoda',
-      image: 'court-decision.svg',
-      type: 'court'
-    },
-    {
-      heading: 'Inna sprawa',
-      image: 'other.svg',
-      type: 'other'
-    }
   ]
 
   return (
@@ -67,7 +60,7 @@ export function ChatPanel({
         {messages.length === 0 && (
           <div className="mb-4 grid grid-cols-1 gap-2 px-4 sm:px-0">
             <div
-              className={`cursor-pointer rounded-lg border bg-white p-4 hover:bg-zinc-50 dark:bg-zinc-950 dark:hover:bg-zinc-900`}
+              className={`rounded-lg border bg-white p-4 dark:bg-zinc-950 dark:hover:bg-zinc-900`}
             >
               <b>Gotowe przypadki</b>
               <p>

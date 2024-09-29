@@ -30,7 +30,7 @@ export async function generateMetadata({
     redirect('/' + params.lng)
   } else {
     return {
-      title: chat?.title.toString().slice(0, 50) ?? 'Chat'
+      title: chat?.title.toString().slice(0, 50) ?? 'e-podatek'
     }
   }
 }

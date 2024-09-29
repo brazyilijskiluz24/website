@@ -8,6 +8,8 @@ import remarkGfm from 'remark-gfm'
 import remarkMath from 'remark-math'
 import { StreamableValue } from 'ai/rsc'
 import { useStreamableText } from '@/lib/hooks/use-streamable-text'
+import * as React from 'react'
+import Image from 'next/image'
 
 // Different types of message bubbles.
 
@@ -35,10 +37,13 @@ export function BotMessage({
 
   return (
     <div className={cn('group relative flex items-start md:-ml-12', className)}>
-      <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">
-        {/* TODO: make sure to change to real icon! */}
-        <IconOpenAI />
-      </div>
+      <Image
+        src={`/images/tax-assistant.jpeg`}
+        alt={'asystenka'}
+        width={22}
+        height={22}
+        className="mb-2 rounded-md object-contain"
+      />
       <div className="ml-4 flex-1 space-y-2 overflow-hidden px-1">
         <MemoizedReactMarkdown
           className="prose break-words dark:prose-invert prose-p:leading-relaxed prose-pre:p-0"
@@ -71,7 +76,13 @@ export function BotCard({
           !showAvatar && 'invisible'
         )}
       >
-        <IconOpenAI />
+        <Image
+          src={`/images/tax-assistant.jpeg`}
+          alt={'asystenka'}
+          width={22}
+          height={22}
+          className="mb-2 rounded-md object-contain"
+        />
       </div>
       <div className="ml-4 flex-1 pl-2">{children}</div>
     </div>
@@ -94,7 +105,13 @@ export function SpinnerMessage() {
   return (
     <div className="group relative flex items-start md:-ml-12">
       <div className="flex size-[24px] shrink-0 select-none items-center justify-center rounded-md border bg-primary text-primary-foreground shadow-sm">
-        <IconOpenAI />
+        <Image
+          src={`/images/tax-assistant.jpeg`}
+          alt={'asystenka'}
+          width={22}
+          height={22}
+          className="mb-2 rounded-md object-contain"
+        />
       </div>
       <div className="ml-4 h-[24px] flex flex-row items-center flex-1 space-y-2 overflow-hidden px-1">
         {spinner}

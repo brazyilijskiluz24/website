@@ -31,13 +31,17 @@ export async function SidebarList({ userId, lng }: SidebarListProps) {
             </div>
           ) : (
             <div className="p-8 text-center">
-              <p className="text-sm text-muted-foreground">No chat history</p>
+              <p className="text-sm text-muted-foreground">
+                {userId
+                  ? 'Brak historii czatu'
+                  : 'Brak historii czatu. Zaloguj sięaby umożliwić zapis'}
+              </p>
             </div>
           )}
         </div>
         <div className="flex items-center justify-between p-4">
           <ThemeToggle />
-          <ClearHistory isEnabled={chats?.length > 0} />
+          <ClearHistory isEnabled={chats?.length > 0} lng={lng} />
         </div>
       </div>
     )
