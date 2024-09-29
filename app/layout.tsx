@@ -23,7 +23,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params: { lng } }: Params) {
   const pathname = new URL(headers().get('x-request-url')!).pathname
-  //@ts-ignore
+  console.log('pathname', pathname)
+
+  // @ts-ignore
   if (!lng && !languages.includes(pathname?.slice(1, 3) || '')) {
     redirect('/' + fallbackLng + '/' + pathname.slice(1))
   }

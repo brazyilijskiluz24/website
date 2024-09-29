@@ -7,6 +7,7 @@ import { SidebarList } from '@/components/sidebar-list'
 import { buttonVariants } from '@/components/ui/button'
 import { IconPlus } from '@/components/ui/icons'
 import { TLanguage } from '@/app/i18n/settings'
+import { useTranslation } from '@/app/i18n'
 
 interface ChatHistoryProps {
   userId?: string
@@ -14,6 +15,8 @@ interface ChatHistoryProps {
 }
 
 export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
+  const { t } = useTranslation(lng, 'chat')
+
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center justify-between p-4">
@@ -28,7 +31,7 @@ export async function ChatHistory({ userId, lng }: ChatHistoryProps) {
           )}
         >
           <IconPlus className="-translate-x-2 stroke-2" />
-          Nowy chat
+          Nowy Chat
         </Link>
       </div>
       <React.Suspense

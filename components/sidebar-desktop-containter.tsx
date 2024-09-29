@@ -1,4 +1,4 @@
-// 'use client'
+//'use client'
 
 import React from 'react'
 import { Header } from '@/components/header'
@@ -7,6 +7,7 @@ import { User } from 'next-auth'
 import { TLanguage } from '@/app/i18n/settings'
 import { LoginButton } from '@/components/login-button'
 import { ChevronLeftIcon, InfoCircledIcon } from '@radix-ui/react-icons'
+import { useTranslation } from '@/app/i18n'
 
 const SidebarDesktopContainer = ({
   user,
@@ -27,6 +28,8 @@ const SidebarDesktopContainer = ({
 export default SidebarDesktopContainer
 
 const Profile = (props: { user?: User; lng: TLanguage }) => {
+  const { t } = useTranslation(props.lng, 'chat')
+
   if (!props.user) {
     return (
       <div className={'flex gap-2 items-center mt-10 lg:px-4 xl:px-6'}>
@@ -54,7 +57,7 @@ const Profile = (props: { user?: User; lng: TLanguage }) => {
       <div className={'flex items-center mt-10 lg:px-4 xl:px-6'}>
         <div className={'flex flex-col'}>
           <h2 className={'text-sm font-medium'}>{props.user.email}</h2>
-          <h3 className={'text-xs'}>Konto</h3>
+          <h3 className={'text-xs'}>{t('account')}</h3>
         </div>
       </div>
       <div
@@ -63,7 +66,7 @@ const Profile = (props: { user?: User; lng: TLanguage }) => {
         }
       >
         <InfoCircledIcon />
-        <p className={'text-sm ml-2 mr-auto'}>Edytuj dane osobowe</p>
+        <p className={'text-sm ml-2 mr-auto'}>{t('editAccount')}</p>
         <ChevronLeftIcon />
       </div>
     </div>

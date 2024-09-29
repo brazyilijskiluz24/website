@@ -3,15 +3,16 @@ import { UseChatHelpers } from 'ai/react'
 import { Button } from '@/components/ui/button'
 import { ExternalLink } from '@/components/external-link'
 import { IconArrowRight } from '@/components/ui/icons'
+import { useTranslation } from '@/app/i18n/client'
+import { TLanguage } from '@/app/i18n/settings'
 
-export function EmptyScreen() {
+export function EmptyScreen({ lng }: { lng: TLanguage }) {
+  const { t } = useTranslation(lng, 'chat')
+
   return (
     <div className="flex flex-col gap-2 rounded-lg border bg-background p-8">
-      <h1 className="text-lg font-semibold">Witaj! 👋</h1>
-      <p>
-        Witaj w serwisie e-podatek. Jestem Twoim inteligentnym asystentem,
-        gotowym pomóc Ci w wypełnieniu formularzy podatkowych, dostępny 24/7.
-      </p>
+      <h1 className="text-lg font-semibold">{t('helloMsg')}</h1>
+      <p>{t('hello')}</p>
     </div>
   )
 }

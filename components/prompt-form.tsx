@@ -17,14 +17,19 @@ import {
 import { useEnterSubmit } from '@/lib/hooks/use-enter-submit'
 import { nanoid } from 'nanoid'
 import { useRouter } from 'next/navigation'
+import { TLanguage } from '@/app/i18n/settings'
+import { useTranslation } from '@/app/i18n/client'
 
 export function PromptForm({
   input,
-  setInput
+  setInput,
+  lng
 }: {
   input: string
+  lng: TLanguage
   setInput: (value: string) => void
 }) {
+  const { t } = useTranslation(lng, 'chat')
   const router = useRouter()
   const { formRef, onKeyDown } = useEnterSubmit()
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
@@ -78,16 +83,16 @@ export function PromptForm({
               }}
             >
               <IconPlus />
-              <span className="sr-only">Nowy Chat</span>
+              <span className="sr-only">{t('newChat')}</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>New Chat</TooltipContent>
+          <TooltipContent>{t('newChat')}</TooltipContent>
         </Tooltip>
         <Textarea
           ref={inputRef}
           tabIndex={0}
           onKeyDown={onKeyDown}
-          placeholder="Send a message."
+          placeholder={t('sendMessage')}
           className="min-h-[60px] w-full resize-none bg-transparent px-4 py-[1.3rem] focus-within:outline-none sm:text-sm"
           autoFocus
           spellCheck={false}
@@ -103,10 +108,10 @@ export function PromptForm({
             <TooltipTrigger asChild>
               <Button type="submit" size="icon" disabled={input === ''}>
                 <IconArrowElbow />
-                <span className="sr-only">Send message</span>
+                <span className="sr-only">{t('sendMessage')}</span>
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Send message</TooltipContent>
+            <TooltipContent>{t()}</TooltipContent>
           </Tooltip>
         </div>
       </div>

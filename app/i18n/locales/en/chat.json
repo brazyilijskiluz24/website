@@ -1,0 +1,22 @@
+{
+  "pageTitle": "Chat",
+  "selectOrSearchTaxOffice": "Select or search for a tax office",
+  "pickADate": "Pick a date",
+  "selectLocation": "Select a location",
+  "hello": "Welcome to the e-tax service. I am your intelligent assistant,\n        ready to help you fill out tax forms, available 24/7.",
+  "carTitle": "Car purchase",
+  "carDesc": "Case type: car purchase",
+  "loanTitle": "I received a loan",
+  "loadDesc": "Case type: loan received",
+  "otherTitle": "Ready-made cases",
+  "otherDesc": "Do you know exactly what you want to do? Choose one of the prepared\n                scenarios. Otherwise, describe what you intend to do.",
+  "newChat": "New chat",
+  "sendMessage": "Send message",
+  "account": "Account",
+  "helloMsg": "Hello! \uD83D\uDC4B",
+  "login": "Log in",
+  "historyConversation": "Chat history",
+  "noConversationHistory": "No chat history",
+  "noConversationHistoryLogin": "No chat history. Log in to enable saving"
+
+}
